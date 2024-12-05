@@ -1,0 +1,75 @@
+@startuml
+
+class QueueManagementSystem {
+    +registerCustomer(email: String, fullName: String): void
+    +registerParticipant(email: String, fullName: String): void
+    +registerTeller(email: String, fullName: String): void
+    +createQueue(prefix: String, maxNumber: int): void
+    +manageQueue(queueId: int): void
+    +controlQueueProgress(queueId: int): void
+    +sendQueueNumber(participantId: int): void
+}
+
+class Customer {
+    +email: String
+    +fullName: String
+    +createQueue(prefix: String, maxNumber: int): void
+    +manageQueues(): void
+}
+
+class Participant {
+    +email: String
+    +fullName: String
+    +registerForQueue(queueId: int): void
+    +receiveQueueNumber(): int
+}
+
+class Teller {
+    +email: String
+    +fullName: String
+    +controlQueue(queueId: int): void
+}
+
+class Queue {
+    +queueId: int
+    +prefix: String
+    +maxNumber: int
+    +currentNumber: int
+    +resetQueue(): void
+    +incrementQueue(): void
+}
+
+class DisplaySystem {
+    +displayQueues(): void
+}
+
+class WebApp {
+    +registerParticipant(email: String, fullName: String): void
+    +displayQueueNumber(queueId: int): void
+}
+
+class MobileApp {
+    +registerParticipant(email: String, fullName: String): void
+    +displayQueueNumber(queueId: int): void
+}
+
+class EmailSystem {
+    +sendQueueNumber(email: String, queueNumber: int): void
+}
+
+QueueManagementSystem --> Customer
+QueueManagementSystem --> Participant
+QueueManagementSystem --> Teller
+QueueManagementSystem --> Queue
+QueueManagementSystem --> DisplaySystem
+QueueManagementSystem --> WebApp
+QueueManagementSystem --> MobileApp
+QueueManagementSystem --> EmailSystem
+
+Customer --> Queue : manages >
+Participant --> Queue : registers >
+Teller --> Queue : controls >
+DisplaySystem --> Queue : displays >
+EmailSystem --> Participant : sends queue number >
+
+@enduml
