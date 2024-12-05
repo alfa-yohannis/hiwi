@@ -1,52 +1,52 @@
 # Hiwi
-Hiwi is a Queue Management System
+Hiwi is a Queue Management System designed to efficiently manage user queues.
 
+## User Story: Queue Management System
 
-# User Story: Queue Management System
+Users can take on one of three roles: Owner (Admin), Teller, or Client. To access the system, all users must first register.
 
-A user can be an owner (admin), teller, and client. In order to use the system, every user has to register in the system.
+### Owner
+The Owner can manage queues with full CRUD (Create, Read, Update, Delete) functionality. Each queue is identified by a unique prefix and a maximum number. Queue numbering begins with the prefix followed by zero (0) and increments by 1 as the queue progresses. The Owner can reset the queue number to zero or manually increment it as needed.
 
-**Owner**. An Owner can manage (*CRUD: create, read, update, delete*) queues. Each customer can have multiple queues, identified by a prefix and a maximum number. The queue numbering starts with the prefix followed by zero (0) and can be increased as by 1 the queue progresses. The owner can reset the number back to zero and also able to increase the number. 
+### Teller
+The Owner can assign users as Tellers for specific queues by sending an invitation. The user must accept the invitation to confirm their role as a Teller. Once confirmed, Tellers are authorized to increment the queue numbers for the queues assigned to them.
 
-**Teller**. The owner can assign another user to the teller of a queue by sending an ivitation. The user has to accept the invitation to confirm it. Tellers have the right to increase the numbers of queues assigned to them. 
+### Client
+Clients are users who wish to join a queue and obtain a queue number. Registration is required, which can be done by scanning a barcode or entering a queue ID through the web or mobile app. During registration, clients must provide their email address, phone number, and full name, or authenticate using **OAuth**. These identifiers help Tellers confirm clients' identities when their queue numbers are called or displayed. Upon successful registration, clients receive their queue number and a token (QR or barcode), which is sent via the web app, email, and mobile app notifications. This token simplifies the confirmation process.
 
-**Client**. Clients are users that want to line, getting a number, in a queue. They have to register first either through a barcode scan or by entering a queue ID, using a web or mobile app. During registration, participants must provide their email, phone number, and full name or authenticate using **OAuth** as identifiers for tellers to confirm their identities when their turns are called or displayed. After registration, clients receives their queue number and token (can be a QR/bar-code), which is sent to them via the web app, email, and mobile app notifications. The token is used to simplify confirmation.
- 
-**Queue**. A queue has a name as a human-friendly identifier. It also has a description that explain the context of the queue, such as location, event, owner, purpose, or other relevant information. Is also has two status, active and inactive. When active, the number can be increased. The latter works oppositely. It has a prefix, e.g., C90, XY456, as a que to differentiate it with other queues visually. A queue can have many tellers that can increase its number. A queue also can have many clients that already registered, assigned a number in that queue.
+### Queue
+A queue has a human-friendly name for easy identification and a description that provides context, such as location, event, owner, or purpose. Each queue has two statuses: **Active** and **Inactive**. When a queue is active, its numbers can be incremented. Inactive status disables this functionality. Queues are visually distinguished by their prefixes (e.g., C90, XY456). A queue can have multiple Tellers managing it and multiple Clients registered, each with a unique queue number.
 
-# Requirements
+## Requirements
 
 | Number | Code          | Description                                                                 | Status      | Developer | Remarks |
-|--------|---------------|-----------------------------------------------------------------------------|-------------|---------------------|---------|
-| 1      | USR-REG       | Users must register to use the system.                                     | Pending     |                     |         |
-| 2      | OWN-CRUD      | Owner can manage (create, read, update, delete) queues.                    | Pending     |                     |         |
-| 3      | OWN-ASSIGN    | Owner can assign tellers to queues via invitations.                        | Pending     |                     |         |
-| 4      | OWN-RESET     | Owner can reset queue numbers back to zero.                                | Pending     |                     |         |
-| 5      | OWN-INCREMENT | Owner can increment queue numbers.                                         | Pending     |                     |         |
-| 6      | TEL-INCREMENT | Teller can increment queue numbers assigned to them.                       | Pending     |                     |         |
-| 7      | CLI-REGISTER  | Clients can register for a queue using a barcode scan or queue ID.         | Pending     |                     |         |
-| 8      | CLI-OAUTH     | Clients can authenticate via OAuth during registration.                    | Pending     |                     |         |
-| 9      | CLI-DATA      | Clients must provide email, phone, and full name during registration.      | Pending     |                     |         |
-| 10     | CLI-TOKEN     | Clients receive queue numbers and tokens (QR/barcode) after registration.  | Pending     |                     |         |
-| 11     | Q-MANAGE      | Queue must have a name and description.                                    | Pending     |                     |         |
-| 12     | Q-STATUS      | Queue must have two statuses: active and inactive.                         | Pending     |                     |         |
-| 13     | Q-PREFIX      | Queue numbers must start with a prefix (e.g., C90, XY456).                 | Pending     |                     |         |
-| 14     | Q-MULTI-TELL  | A queue can have multiple tellers assigned.                                | Pending     |                     |         |
-| 15     | Q-MULTI-CLI   | A queue can have multiple clients registered.                              | Pending     |                     |         |
-
-
+|--------|---------------|-----------------------------------------------------------------------------|-------------|-----------|---------|
+| 1      | USR-REG       | Users must register to use the system.                                     | Pending     |           |         |
+| 2      | OWN-CRUD      | Owners can manage (create, read, update, delete) queues.                   | Pending     |           |         |
+| 3      | OWN-ASSIGN    | Owners can assign Tellers to queues via invitations.                       | Pending     |           |         |
+| 4      | OWN-RESET     | Owners can reset queue numbers back to zero.                               | Pending     |           |         |
+| 5      | OWN-INCREMENT | Owners can increment queue numbers.                                        | Pending     |           |         |
+| 6      | TEL-INCREMENT | Tellers can increment queue numbers assigned to them.                      | Pending     |           |         |
+| 7      | CLI-REGISTER  | Clients can register for a queue using a barcode scan or queue ID.         | Pending     |           |         |
+| 8      | CLI-OAUTH     | Clients can authenticate via OAuth during registration.                    | Pending     |           |         |
+| 9      | CLI-DATA      | Clients must provide their email, phone number, and full name during registration. | Pending     |           |         |
+| 10     | CLI-TOKEN     | Clients receive queue numbers and tokens (QR/barcode) after registration.  | Pending     |           |         |
+| 11     | Q-MANAGE      | Queues must have a name and description.                                   | Pending     |           |         |
+| 12     | Q-STATUS      | Queues must have two statuses: Active and Inactive.                        | Pending     |           |         |
+| 13     | Q-PREFIX      | Queue numbers must start with a prefix (e.g., C90, XY456).                 | Pending     |           |         |
+| 14     | Q-MULTI-TELL  | A queue can have multiple Tellers assigned.                                | Pending     |           |         |
+| 15     | Q-MULTI-CLI   | A queue can have multiple Clients registered.                              | Pending     |           |         |
 
 ### States of the Status Column
 
-The **Status** column represents the progress or condition of a requirement. The possible states are:
+The **Status** column indicates the progress of each requirement. The possible states are:
 
-1. **Pending**: The requirement is identified but not yet started.
-2. **In Progress**: Work is currently being done to implement the requirement.
+1. **Pending**: The requirement has been identified but work has not started.
+2. **In Progress**: The requirement is currently being implemented.
 3. **Completed**: The requirement has been fully implemented and verified.
 4. **On Hold**: Work on the requirement is paused due to dependencies or other issues.
-5. **Rejected**: The requirement has been reviewed but will not be implemented.
+5. **Rejected**: The requirement was reviewed but will not be implemented.
 6. **Under Review**: The requirement is being evaluated or tested for further action.
-
 
 # Diagrams
 ## Usecase Diagram
@@ -63,6 +63,3 @@ The **Status** column represents the progress or condition of a requirement. The
 
 ## Entity Diagram 
 ![entity diagram](doc/out/entity/entity.svg) -->
-
-# Task
-Create Queue Management System using Elixir and Phoenix Framework.
