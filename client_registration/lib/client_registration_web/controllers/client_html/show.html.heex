@@ -1,0 +1,13 @@
+<.header>
+  Hi {@client.name}
+  <:subtitle>You are already registered in the queue.</:subtitle>
+</.header>
+
+<.list>
+  <:item title="Queue">{@client.id}</:item>
+  <:item title="Name">{@client.name}</:item>
+  <:item title="Email">{@client.email}</:item>
+  <:item title="Phone">{@client.phone}</:item>
+</.list>
+
+<.link navigate={~p"/clients/new"} class="custom-done-button">Done</.link>

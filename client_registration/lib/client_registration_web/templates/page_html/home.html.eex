@@ -1,0 +1,6 @@
+<.header>
+  Selamat Datang
+  <:subtitle>Tekan tombol register untuk mendaftar</:subtitle>
+</.header>
+
+<%= link "Register", to: Routes.client_path(@conn, :new), class: "btn btn-primary" %>
