@@ -1,0 +1,55 @@
+<div class="container mx-auto px-4 py-6">
+  <!-- Header Section -->
+  <div class="flex justify-between items-center border-b pb-4 mb-4">
+    <h1 class="text-2xl font-bold text-gray-800">Listing Tellers</h1>
+    <div>
+      <.link href={~p"/tellers/new"}>
+        <.button class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+          New Teller
+        </.button>
+      </.link>
+    </div>
+  </div>
+
+  <!-- Table Section -->
+  <div class="overflow-x-auto">
+    <table class="min-w-full border-collapse border border-gray-200">
+      <thead class="bg-gray-100">
+        <tr>
+          <th class="px-4 py-2 text-left text-gray-600 font-medium border border-gray-200">Name</th>
+          <th class="px-4 py-2 text-left text-gray-600 font-medium border border-gray-200">Queues</th>
+          <th class="px-4 py-2 text-left text-gray-600 font-medium border border-gray-200">Actions</th>
+        </tr>
+      </thead>
+      <tbody class="bg-white divide-y divide-gray-200">
+        <%= for teller <- @tellers do %>
+          <tr class="hover:bg-gray-50">
+            <td class="px-4 py-2 border border-gray-200">
+              <%= teller.name %>
+            </td>
+            <td class="px-4 py-2 border border-gray-200">
+              <%= if Enum.empty?(teller.queues) do %>
+                No Queues Assigned
+              <% else %>
+                <%= Enum.map(teller.queues, & &1.name) |> Enum.join(", ") %>
+              <% end %>
+            </td>
+            <td class="px-4 py-2 border border-gray-200 space-x-2">
+              <div class="flex space-x-2">
+                <.link navigate={~p"/tellers/#{teller.id}"} class="text-blue-600 hover:underline">
+                  Show
+                </.link>
+                <.link navigate={~p"/tellers/#{teller.id}/edit"} class="text-green-600 hover:underline">
+                  Edit
+                </.link>
+                <.link href={~p"/tellers/#{teller.id}"} method="delete" data-confirm="Are you sure?" class="text-red-600 hover:underline">
+                  Delete
+                </.link>
+              </div>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>

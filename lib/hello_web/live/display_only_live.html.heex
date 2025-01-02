@@ -1,0 +1,18 @@
+<div class="h-screen flex flex-col items-center">
+  <!-- Name at the Top Center -->
+  <div class="pt-8">
+    <h1 class="text-8xl font-bold text-center"><%= @queue_name %></h1>
+  </div>
+
+  <!-- Number in the Center, Adjusted Upwards -->
+  <div class="flex-grow flex items-center justify-center -mt-24">
+    <div class="text-[16rem] font-bold text-center">
+      <.live_component
+        module={HelloWeb.QueueCounterComponent}
+        id="queue_counter"
+        queue_prefix={@queue_prefix}
+        current_number={@current_number}
+      />
+    </div>
+  </div>
+</div>

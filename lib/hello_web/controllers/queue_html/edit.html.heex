@@ -1,0 +1,32 @@
+<h1>Edit Queue</h1>
+<.form :let={f} for={@changeset} action={~p"/queues/#{@queue.id}"}>
+      <div>
+        <div>
+          <label for="name">Name</label>
+          <.input field={f[:name]} />
+        </div>
+        <div>
+          <label for="status">Status</label>
+          <.input field={f[:status]} type="select" options={["Ready": "ready", "Running": "running", "Inactive": "inactive"]} />
+        </div>
+        <div>
+          <label for="description">Description</label>
+          <.input field={f[:description]} type="textarea" />
+        </div>
+        <div>
+          <label for="prefix">Prefix</label>
+          <.input field={f[:prefix]} />
+        </div>
+        <div>
+          <label for="max_number">Max Number</label>
+          <.input field={f[:max_number]} type="number" />
+        </div>
+        <div class="vertical-space">
+        </div>
+        <div>
+          <.button class="button">
+            Submit
+          </.button>
+        </div>
+      </div>
+</.form>

@@ -1,0 +1,22 @@
+<.simple_form :let={f} for={@changeset} action={~p"/tellers"} method="post">
+  <.error :if={@changeset.action}>
+    Oops, something went wrong! Please check the errors below.
+  </.error>
+
+  <.input field={f[:name]} type="text" label="Name" />
+  <.input field={f[:username]} type="text" label="Username" />
+  <.input field={f[:password]} type="password" label="Password" />
+
+  <.input
+    field={f[:queue_ids]}
+    type="select"
+    label="Queues"
+    options={@queue_options}
+    multiple
+    class="border border-gray-300 rounded-md p-2 w-full"
+  />
+  
+  <:actions>
+    <.button>Save Teller</.button>
+  </:actions>
+</.simple_form>

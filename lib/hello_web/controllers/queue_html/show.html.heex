@@ -1,0 +1,13 @@
+<h1>Queue</h1>
+<div class="font-semibold hover:text-zinc-700">Id: <%= @queue.id %></div>
+<div class="font-semibold hover:text-zinc-700">Name: <%= @queue.name %></div>
+<div class="font-semibold hover:text-zinc-700">Description:</div>
+<div><%= @queue.description %></div>
+<div class="font-semibold hover:text-zinc-700">Prefix: <%= @queue.prefix %></div>
+<div class="font-semibold hover:text-zinc-700">Max Number: <%= @queue.max_number %></div>
+
+<div>
+  <.live_component module={HelloWeb.QueueCounterComponent} id="queue_counter" current_number={@current_number} />
+</div>
+
+<button phx-click="increment_number">+</button>

@@ -1,0 +1,5 @@
+<.header>
+  Edit Teller <%= @teller.id %>
+</.header>
+
+<.teller_form changeset={@changeset} action={~p"/tellers/#{@teller}"} />
