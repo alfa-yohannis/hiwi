@@ -1,0 +1,40 @@
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
+/* This file is for your main application CSS */
+.custom-button {
+    font-size: 0.75rem;
+    font-weight: bold;
+    margin-top: 15rem;
+    margin-left: 4.8rem;
+    margin-right: 4.8rem;
+    background-color: #000; /* Hitam */
+    color: #fff; /* Putih */
+    padding: 0.5rem 1rem; /* Padding */
+    border-radius: 0.5rem; /* Sudut membulat */
+    text-align: center; /* Rata tengah */
+    display: inline-block; /* Untuk tombol link */
+    transition: background-color 0.3s; /* Efek transisi */
+  }
+  
+  .custom-button:hover {
+    background-color: #333; /* Abu-abu gelap saat hover */
+  }
+  
+  .custom-done-button {
+    font-size: 0.75rem;
+    font-weight: bold;
+    margin-top: 10rem;
+    background-color: #000; /* Hitam */
+    color: #fff; /* Putih */
+    padding: 0.5rem 1rem; /* Padding */
+    border-radius: 0.5rem; /* Sudut membulat */
+    text-align: center; /* Rata tengah */
+    display: inline-block; /* Untuk tombol link */
+    transition: background-color 0.3s; /* Efek transisi */
+  }
+  
+  .custom-done-button:hover {
+    background-color: #333; /* Abu-abu gelap saat hover */
+  }
