@@ -7,7 +7,9 @@
     <div class="text-2xl"><%= @queue.description %></div>
     <div class="text-2xl font-semibold hover:text-zinc-700">Max Number: <%= @queue.max_number %></div>
     <button class="mt-4 px-4 py-2 bg-blue-500 text-white text-2xl rounded hover:bg-blue-600" phx-click="increment_number">Next Number</button>
-    <%= if @user_id == @queue.user_id do %>
+
+    <!-- Show reset button for owner (using user_id) or teller (using teller_id) -->
+    <%= if @role == "Owner" and @user_id == @queue.user_id do %>
       <button class="mt-4 px-4 py-2 bg-red-500 text-white text-2xl rounded hover:bg-red-600" phx-click="reset_to_zero">
         Reset to Zero
       </button>

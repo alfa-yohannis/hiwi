@@ -69,8 +69,8 @@ config :ueberauth, Ueberauth,
   ]
 
 config :ueberauth, Ueberauth.Strategy.Github.OAuth,
-  client_id: "Ov23liNk5E0jfJFTfVOC",
-  client_secret: "0109b699dbfc5d83f034dbb6edb5276af1c54b94"
+  client_id: "replace with your client id",
+  client_secret: "replace with your client secret"
 
 config :ueberauth, Ueberauth.Strategy.Google.OAuth,
   client_id: System.get_env("GOOGLE_CLIENT_ID"),

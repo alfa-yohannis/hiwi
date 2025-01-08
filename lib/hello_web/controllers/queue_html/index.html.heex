@@ -1,29 +1,35 @@
-<h1>Queues</h1>
-<ul>
-  <%= for queue <- @queues do %>
-    <li class="action-links">
-      <%= queue.name %>
-      <%= if  @conn.assigns.user && @conn.assigns.user.id==queue.user_id do %>
-        <div>
-          |
-          <.link href={~p"/queues/#{queue.id}/control"}>Control</.link>
-          |
-          <.link href={~p"/queues/#{queue.id}/display"}>Display</.link>
-          |
-          <.link href={~p"/queues/#{queue.id}/edit"}>Edit</.link>
-          |
-          <.link href={~p"/queues/#{queue.id}/delete"} method="delete">Delete</.link>
-          |
-        </div>
-      <% end %>
-    </li>
+<%= if @conn.assigns.user do %>
+  <h1>Queues</h1>
+  <ul>
+    <%= for queue <- @queues do %>
+      <li class="action-links">
+        <%= queue.name %>
+        <%= if @conn.assigns.user.id == queue.user_id do %>
+          <div>
+            |
+            <.link href={~p"/queues/#{queue.id}/control"}>Control</.link>
+            |
+            <.link href={~p"/queues/#{queue.id}/display"}>Display</.link>
+            |
+            <.link href={~p"/queues/#{queue.id}/edit"}>Edit</.link>
+            |
+            <.link href={~p"/queues/#{queue.id}/delete"} method="delete">Delete</.link>
+            |
+          </div>
+        <% end %>
+      </li>
+    <% end %>
+  </ul>
+
+  <div class="button">
+    <.link href={~p"/queues/new"}>New Queue</.link>
+  </div>
+
+  <%= if @conn.assigns.user.role == "Owner" do %>
+    <div class="button">
+      <.link href={~p"/tellers/new"}>Add New Teller</.link>
+    </div>
   <% end %>
-</ul>
-
-<div class="button">
-  <.link href={~p"/queues/new"}>New Queue</.link>
-</div>
-
-<div class="button">
-  <.link href={~p"/tellers/new"}>Add New Teller</.link>
-</div>
+<% else %>
+  <p class="text-center">You must be logged in to view this content.</p>
+<% end %>

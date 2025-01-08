@@ -122,4 +122,15 @@ defmodule Hello.Tellers do
     end)
     |> Repo.transaction()
   end
+
+  # Authenticates a teller with the provided credentials
+  def authenticate_teller(username, password) do
+    teller = Repo.get_by(Teller, username: username)
+
+    if teller && Argon2.verify_pass(password, teller.hashed_password) do
+      {:ok, teller}
+    else
+      :error
+    end
+  end
 end

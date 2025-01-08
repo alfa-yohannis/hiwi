@@ -10,17 +10,29 @@
     </div>
     <div class="flex items-center gap-4 font-semibold leading-6 text-zinc-900">
       <%= if @conn.assigns[:user] do %>
+        <!-- Display User Role -->
         <span class="text-sm text-gray-500">
           <%= @conn.assigns[:user].role || "User" %>
         </span>
+        <!-- Logout Link -->
         <a href={~p"/auth/signout"} class="hover:text-zinc-700">
           Signout
         </a>
       <% else %>
+        <!-- Login Options -->
+        <a href={~p"/login/teller"} class="hover:text-zinc-700">
+          Login as Teller
+        </a>
+        <a href={~p"/login/client"} class="hover:text-zinc-700">
+          Login as Client
+        </a>
+        <a href={~p"/register/client"} class="hover:text-zinc-700">
+          Register as Client
+        </a>
         <a href={~p"/auth/github"} class="hover:text-zinc-700">
           Login with GitHub
         </a>
-      <% end %> 
+      <% end %>
       <a href="https://twitter.com/elixirphoenix" class="hover:text-zinc-700">
         @elixirphoenix
       </a>

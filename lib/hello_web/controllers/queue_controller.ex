@@ -3,15 +3,49 @@ defmodule HelloWeb.QueueController do
   alias Hello.Queue
   import Ecto.Query
   alias Hello.Repo
+  alias Hello.ClientQueues
 
   plug HelloWeb.Plugs.RequireAuth when action in [:new, :create, :update, :edit, :delete]
   plug :check_queue_owner when action in [:update, :edit, :delete]
 
   def index(conn, _params) do
-    IO.inspect(conn.assigns)
+    user = conn.assigns[:user]
 
-    queues = Repo.all(Queue)
-    render(conn, :index, queues: queues)
+    if user do
+      cond do
+        user.role == "Client" ->
+          # Fetch queues specific to the client
+          queues = Repo.all(
+            from cq in Hello.Clients.ClientQueue,
+            join: q in assoc(cq, :queue),
+            where: cq.client_id == ^user.id,
+            select: q
+          )
+          render(conn, :client, queues: queues)
+
+        user.role == "Owner" ->
+          # Fetch queues owned by the owner
+          queues = Repo.all(from q in Hello.Queue, where: q.user_id == ^user.id)
+          render(conn, :index, queues: queues)
+
+        user.role == "Teller" ->
+          # Fetch queues assigned to the teller
+          queues = Repo.all(
+            from tq in Hello.Tellers.TellerQueue,
+            join: q in assoc(tq, :queue),
+            where: tq.teller_id == ^user.id,
+            select: q
+          )
+          render(conn, :index, queues: queues)
+
+        true ->
+          # Default case for logged-in users without a specific role
+          render(conn, :index, queues: [])
+      end
+    else
+      # User is not logged in; render blank page or redirect
+      render(conn, :index, queues: [])
+    end
   end
 
   def show(conn, params) do
@@ -32,18 +66,20 @@ defmodule HelloWeb.QueueController do
   end
 
   def create(conn, %{"queue" => queue_params}) do
-    current_user = conn.assigns[:user]
+    # Fetch the current user as an Ecto struct
+    current_user = Repo.get!(Hello.User, conn.assigns[:user].id)
 
+    # Build the association and create the changeset
     changeset =
       current_user
-      |> Ecto.build_assoc(:queues)  # Sets `user_id`
-      |> Queue.changeset(queue_params)
+      |> Ecto.build_assoc(:queues)  # This requires `current_user` to be an Ecto struct
+      |> Hello.Queue.changeset(queue_params)
 
     case Repo.insert(changeset) do
       {:ok, _queue} ->
         conn
         |> put_flash(:info, "Queue created successfully.")
-        |> redirect(to: ~p"/")  # Use the ~p sigil for paths
+        |> redirect(to: ~p"/")
 
       {:error, changeset} ->
         render(conn, :new, changeset: changeset)

@@ -15,6 +15,7 @@ defmodule Hello.Queue do
     field :update_user, :string
     belongs_to :user, Hello.User
     many_to_many :tellers, Hello.Tellers.Teller, join_through: "teller_queues"
+    many_to_many :clients, Hello.Clients.Client, join_through: "client_queues"
 
     timestamps(type: :utc_datetime)
   end

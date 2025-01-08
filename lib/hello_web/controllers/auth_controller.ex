@@ -30,7 +30,9 @@ defmodule HelloWeb.AuthController do
 
   def signout(conn, _params) do
     conn
-    |> configure_session(drop: true)
+    |> delete_session(:teller_id)  # Drop the teller session, if present
+    |> delete_session(:user_id)    # Drop the user session, if present
+    |> configure_session(drop: true) # Clear the session entirely
     |> put_flash(:info, "Signout has been successful.")
     |> redirect(to: "/")
   end

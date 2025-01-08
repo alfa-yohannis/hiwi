@@ -2,21 +2,24 @@ defmodule HelloWeb.ModifiableLive do
   use HelloWeb, :live_view
   alias Hello.QueueCounter
   alias Hello.Queue
+  import Ecto.Query
   alias Hello.Repo
 
   def mount(params, session, socket) do
     %{"id" => queue_id} = params
 
     case session do
+      # Handle User session
       %{"user_id" => user_id} ->
         user = Repo.get!(Hello.User, user_id)
-        queue = Repo.get!(Hello.Queue, queue_id) # Fetch directly from DB
+        queue = Repo.get!(Hello.Queue, queue_id) # Fetch queue from DB
 
-        IO.inspect(queue.current_number, label: "Direct DB Fetch on Mount")
+        IO.inspect(queue.current_number, label: "Direct DB Fetch on Mount for User")
 
         socket =
           socket
           |> assign(:user, user)
+          |> assign(:role, "Owner") # Explicitly assign the role
           |> assign(:user_id, user_id)
           |> assign(:queue, queue)
           |> assign(:queue_id, queue_id)
@@ -24,6 +27,30 @@ defmodule HelloWeb.ModifiableLive do
 
         {:ok, socket, layout: {HelloWeb.Layouts, :live}}
 
+      # Handle Teller session
+      %{"teller_id" => teller_id} ->
+        teller = Repo.get!(Hello.Tellers.Teller, teller_id)
+        queue =
+          Repo.one(
+            from tq in Hello.Tellers.TellerQueue,
+            join: q in assoc(tq, :queue),
+            where: tq.teller_id == ^teller_id,
+            where: q.id == ^queue_id,
+            select: q
+          )
+
+        socket =
+          socket
+          |> assign(:user, teller)
+          |> assign(:role, "Teller") # Explicitly assign the role
+          |> assign(:user_id, teller_id)
+          |> assign(:queue, queue)
+          |> assign(:queue_id, queue.id)
+          |> assign(:current_number, queue.current_number) # Use DB value
+
+        {:ok, socket, layout: {HelloWeb.Layouts, :live}}
+
+      # Handle no session
       _ ->
         {:ok,
         socket

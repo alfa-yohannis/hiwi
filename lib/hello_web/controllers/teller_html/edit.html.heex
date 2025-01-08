@@ -2,4 +2,4 @@
   Edit Teller <%= @teller.id %>
 </.header>
 
-<.teller_form changeset={@changeset} action={~p"/tellers/#{@teller}"} />
+<.teller_form changeset={@changeset} action={~p"/tellers/#{@teller}"} queue_options={@queue_options} />

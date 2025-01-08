@@ -1,16 +1,18 @@
 defmodule HelloWeb.Plugs.RequireAuth do
   import Plug.Conn
-  alias Hello.Repo
-  alias Hello.User
+  import Phoenix.Controller
+
+  alias HelloWeb.Router.Helpers, as: Routes
+
+  def init(default), do: default
 
   def call(conn, _opts) do
-    if user_id = get_session(conn, :user_id) do
-      user = Repo.get(User, user_id)
-      assign(conn, :current_user, user)
+    if conn.assigns[:user] do
+      conn
     else
       conn
-      |> Phoenix.Controller.put_flash(:error, "You need to log in.")
-      |> Phoenix.Controller.redirect(to: "/login")
+      |> put_flash(:error, "You must be logged in to access this page.")
+      |> redirect(to: Routes.page_path(conn, :index))
       |> halt()
     end
   end

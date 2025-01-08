@@ -80,7 +80,7 @@ defmodule HelloWeb.TellerController do
     changeset = Tellers.change_teller(teller)
     queue_options = fetch_queue_options(conn)  # Fetch queue options
 
-    render(conn, :edit, changeset: changeset, queue_options: queue_options, action: Routes.teller_path(conn, :update, id))
+    render(conn, :edit, teller: teller, changeset: changeset, queue_options: queue_options)
   end
 
   def update(conn, %{"id" => id, "teller" => teller_params}) do

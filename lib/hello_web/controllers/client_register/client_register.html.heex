@@ -1,0 +1,55 @@
+<h1 class="text-xl font-bold mb-4">Client Registration</h1>
+
+<.simple_form :let={f} for={@changeset} action={~p"/register/client"} method="post" class="space-y-4">
+  <.error :if={@changeset.action} class="text-red-600">
+    Oops, something went wrong! Please check the errors below.
+  </.error>
+
+  <!-- Full Name Field -->
+  <.input
+    field={f[:full_name]}
+    type="text"
+    label="Full Name"
+    class="block w-full border border-gray-300 rounded-md p-2"
+  />
+
+  <!-- Email Field -->
+  <.input
+    field={f[:email]}
+    type="email"
+    label="Email"
+    class="block w-full border border-gray-300 rounded-md p-2"
+  />
+
+  <!-- Phone Number Field -->
+  <.input
+    field={f[:phone_number]}
+    type="text"
+    label="Phone Number"
+    class="block w-full border border-gray-300 rounded-md p-2"
+  />
+
+  <!-- Password Field -->
+  <.input
+    field={f[:password]}
+    type="password"
+    label="Password"
+    class="block w-full border border-gray-300 rounded-md p-2"
+  />
+
+  <.input
+    field={f[:queue_ids]}
+    type="select"
+    label="Queues"
+    options={@queue_options}
+    multiple
+    class="border border-gray-300 rounded-md p-2 w-full"
+  />
+
+  <!-- Submit Button -->
+  <:actions>
+    <.button class="bg-blue-500 text-white rounded-md px-4 py-2 hover:bg-blue-600">
+      Register
+    </.button>
+  </:actions>
+</.simple_form>

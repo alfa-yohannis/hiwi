@@ -31,6 +31,17 @@ defmodule HelloWeb.Router do
     live "/thermostat", ThermostatLive
 
     resources "/tellers", TellerController, only: [:new, :create, :edit, :update, :delete, :show, :index]
+
+    get "/login/teller", LoginController, :index
+    post "/login/teller", LoginController, :teller_login
+    delete "/logout", LoginController, :delete
+
+    get "/register/client", ClientRegisterController, :new
+    post "/register/client", ClientRegisterController, :create
+
+    get "/login/client", ClientLoginController, :index
+    post "/login/client", ClientLoginController, :client_login
+    delete "/logout", ClientLoginController, :delete
   end
 
   scope "/auth", HelloWeb do
