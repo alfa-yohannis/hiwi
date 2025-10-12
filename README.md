@@ -21,11 +21,11 @@ A queue has a human-friendly name for easy identification and a description that
 
 | Number | Code          | Description                                                                 | Status      | Developer | Remarks |
 |--------|---------------|-----------------------------------------------------------------------------|-------------|-----------|---------|
-| 1      | USR-REG       | Users must register to use the system.                                     | Pending     |           |         |
-| 2      | OWN-CRUD      | Owners can manage (create, read, update, delete) queues.                   | Pending     |           |         |
-| 3      | OWN-ASSIGN    | Owners can assign Tellers to queues via invitations.                       | Pending     |           |         |
-| 4      | OWN-RESET     | Owners can reset queue numbers back to zero.                               | Pending     |           |         |
-| 5      | OWN-INCREMENT | Owners can increment queue numbers.                                        | Pending     |           |         |
+| 1      | USR-REG       | Users must register to use the system.                                     | Pending     | Naufal          |         |
+| 2      | OWN-CRUD      | Owners can manage (create, read, update, delete) queues.                   | Pending     | Affan          |         |
+| 3      | OWN-ASSIGN    | Owners can assign Tellers to queues via invitations.                       | Pending     |  Alejandro        |         |
+| 4      | OWN-RESET     | Owners can reset queue numbers back to zero.                               | Pending     |  Erdine         |         |
+| 5      | OWN-INCREMENT | Owners can increment queue numbers.                                        | Pending     | Kenneth          |         |
 | 6      | TEL-INCREMENT | Tellers can increment queue numbers assigned to them.                      | Pending     |           |         |
 | 7      | CLI-REGISTER  | Clients can register for a queue using a barcode scan or queue ID.         | Pending     |           |         |
 | 8      | CLI-OAUTH     | Clients can authenticate via OAuth during registration.                    | Pending     |           |         |
