@@ -19,19 +19,23 @@ defmodule HiwiWeb.Router do
 
     get "/", PageController, :home
   end
+  
+  # =======================================================
+  # Rute API (Tempat Tugas Anda)
+  # =======================================================
+  scope "/api", HiwiWeb do
+    pipe_through :api
+    
+    # Rute Nopal yang hilang (Membuat User/Registrasi)
+    post "/users", UserController, :register 
 
-  # Other scopes may use custom stacks.
-  # scope "/api", HiwiWeb do
-  #   pipe_through :api
-  # end
+    # Rute Anda (CRUD Queues)
+    resources "/queues", QueueController, except: [:new, :edit]
+  end
+
 
   # Enable LiveDashboard and Swoosh mailbox preview in development
   if Application.compile_env(:hiwi, :dev_routes) do
-    # If you want to use the LiveDashboard in production, you should put
-    # it behind authentication and allow only admins to access it.
-    # If your application does not have an admins-only section yet,
-    # you can use Plug.BasicAuth to set up some basic authentication
-    # as long as you are also using SSL (which you should anyway).
     import Phoenix.LiveDashboard.Router
 
     scope "/dev" do

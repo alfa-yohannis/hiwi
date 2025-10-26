@@ -38,6 +38,11 @@ defmodule Hiwi.MixProject do
       {:postgrex, ">= 0.0.0"},
       {:phoenix_html, "~> 4.1"},
       {:phoenix_live_reload, "~> 1.2", only: :dev},
+
+      # =======================================================
+      # BARIS YANG ERROR TADI SUDAH SAYA HAPUS DARI SINI
+      # =======================================================
+
       # TODO bump on release to {:phoenix_live_view, "~> 1.0.0"},
       {:phoenix_live_view, "~> 1.0.0-rc.1", override: true},
       {:floki, ">= 0.30.0", only: :test},
@@ -84,3 +89,4 @@ defmodule Hiwi.MixProject do
     ]
   end
 end
+
