@@ -19,7 +19,7 @@ defmodule Hiwi.MixProject do
   def application do
     [
       mod: {Hiwi.Application, []},
-      extra_applications: [:logger, :runtime_tools]
+      extra_applications: [:logger, :runtime_tools, :pow, :comeonin]
     ]
   end
 
@@ -38,6 +38,11 @@ defmodule Hiwi.MixProject do
       {:postgrex, ">= 0.0.0"},
       {:phoenix_html, "~> 4.1"},
       {:phoenix_live_reload, "~> 1.2", only: :dev},
+      
+      # Pow and Comeonin (for Nopal's USR-REG task)
+      {:pow, "~> 1.0"},
+      {:comeonin, "~> 5.3"},
+
       # TODO bump on release to {:phoenix_live_view, "~> 1.0.0"},
       {:phoenix_live_view, "~> 1.0.0-rc.1", override: true},
       {:floki, ">= 0.30.0", only: :test},
