@@ -29,7 +29,7 @@ A queue has a human-friendly name for easy identification and a description that
 | 6      | TEL-INCREMENT | Tellers can increment queue numbers assigned to them.                      | Pending     |           |         |
 | 7      | CLI-REGISTER  | Clients can register for a queue using a barcode scan or queue ID.         | Pending     |           |         |
 | 8      | CLI-OAUTH     | Clients can authenticate via OAuth during registration.                    | Pending     |           |         |
-| 9      | CLI-DATA      | Clients must provide their email, phone number, and full name during registration. | Pending     |           |         |
+| 9      | CLI-DATA      | Clients must provide their email, phone number, and full name during registration. | Pending     |   Wahyu        |         |
 | 10     | CLI-TOKEN     | Clients receive queue numbers and tokens (QR/barcode) after registration.  | Pending     |           |         |
 | 11     | Q-MANAGE      | Queues must have a name and description.                                   | Pending     |           |         |
 | 12     | Q-STATUS      | Queues must have two statuses: Active and Inactive.                        | Pending     |           |         |
