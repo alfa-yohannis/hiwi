@@ -21,8 +21,8 @@ A queue has a human-friendly name for easy identification and a description that
 
 | Number | Code          | Description                                                                 | Status      | Developer | Remarks |
 |--------|---------------|-----------------------------------------------------------------------------|-------------|-----------|---------|
-| 1      | USR-REG       | Users must register to use the system.                                     | In Progress    | Naufal          |         |
-| 2      | OWN-CRUD      | Owners can manage (create, read, update, delete) queues.                   | In Progress     |Erdine         |         |
+| 1      | USR-REG       | Users must register to use the system.                                     | Completed   | Naufal          |         |
+| 2      | OWN-CRUD      | Owners can manage (create, read, update, delete) queues.                   | Completed   |Erdine         |         |
 | 3      | OWN-ASSIGN    | Owners can assign Tellers to queues via invitations.                       | Pending     |  Alejandro        |         |
 | 4      | OWN-RESET     | Owners can reset queue numbers back to zero.                               | Pending     |    Affan       |         |
 | 5      | OWN-INCREMENT | Owners can increment queue numbers.                                        | Pending     | Kenneth          |         |
@@ -31,9 +31,9 @@ A queue has a human-friendly name for easy identification and a description that
 | 8      | CLI-OAUTH     | Clients can authenticate via OAuth during registration.                    | Pending     |     Wahyu      |         |
 | 9      | CLI-DATA      | Clients must provide their email, phone number, and full name during registration. | Pending     |           |         |
 | 10     | CLI-TOKEN     | Clients receive queue numbers and tokens (QR/barcode) after registration.  | Pending     |           |         |
-| 11     | Q-MANAGE      | Queues must have a name and description.                                   | Pending     |           |         |
-| 12     | Q-STATUS      | Queues must have two statuses: Active and Inactive.                        | Pending     |           |         |
-| 13     | Q-PREFIX      | Queue numbers must start with a prefix (e.g., C90, XY456).                 | Pending     |           |         |
+| 11     | Q-MANAGE      | Queues must have a name and description.                                   | Pending     |  Erdine         |         |
+| 12     | Q-STATUS      | Queues must have two statuses: Active and Inactive.                        | In Progress    |   Naufal        |         |
+| 13     | Q-PREFIX      | Queue numbers must start with a prefix (e.g., C90, XY456).                 | In Progress     |   Naufal   |         |
 | 14     | Q-MULTI-TELL  | A queue can have multiple Tellers assigned.                                | Pending     |           |         |
 | 15     | Q-MULTI-CLI   | A queue can have multiple Clients registered.                              | Pending     |           |         |
 
