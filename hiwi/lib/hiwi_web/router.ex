@@ -1,6 +1,7 @@
 defmodule HiwiWeb.Router do
   use HiwiWeb, :router
 
+  # Ini (UserAuth) adalah plug Nopal untuk menangani login di browser
   import HiwiWeb.UserAuth
 
   pipeline :browser do
@@ -10,7 +11,7 @@ defmodule HiwiWeb.Router do
     plug :put_root_layout, html: {HiwiWeb.Layouts, :root}
     plug :protect_from_forgery
     plug :put_secure_browser_headers
-    plug :fetch_current_user
+    plug :fetch_current_user # Plug Nopal untuk cek login
   end
 
   pipeline :api do
@@ -23,18 +24,23 @@ defmodule HiwiWeb.Router do
     get "/", PageController, :home
   end
 
-  # Other scopes may use custom stacks.
-  # scope "/api", HiwiWeb do
-  #   pipe_through :api
-  # end
+  # =======================================================
+  # Rute API (Tempat Tugas Anda dan Tes Terminal)
+  # =======================================================
+  scope "/api", HiwiWeb do
+    pipe_through :api
+    
+    # Rute API Nopal (untuk registrasi via terminal/Invoke-WebRequest)
+    post "/users", UserController, :register 
+
+    # Rute API Anda (untuk CRUD Queue via Postman)
+    resources "/queues", QueueController
+  end
+  # =======================================================
+
 
   # Enable LiveDashboard and Swoosh mailbox preview in development
   if Application.compile_env(:hiwi, :dev_routes) do
-    # If you want to use the LiveDashboard in production, you should put
-    # it behind authentication and allow only admins to access it.
-    # If your application does not have an admins-only section yet,
-    # you can use Plug.BasicAuth to set up some basic authentication
-    # as long as you are also using SSL (which you should anyway).
     import Phoenix.LiveDashboard.Router
 
     scope "/dev" do
@@ -45,8 +51,11 @@ defmodule HiwiWeb.Router do
     end
   end
 
+  # =======================================================
+  # Rute Browser/LiveView (Milik Nopal, JANGAN DIHAPUS)
+  # =======================================================
+  
   ## Authentication routes
-
   scope "/", HiwiWeb do
     pipe_through [:browser, :redirect_if_user_is_authenticated]
 
