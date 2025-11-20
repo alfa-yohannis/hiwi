@@ -29,12 +29,12 @@ A queue has a human-friendly name for easy identification and a description that
 | 6      | TEL-INCREMENT | Tellers can increment queue numbers assigned to them.                      | Pending     |     Wahyu      |         |
 | 7      | CLI-REGISTER  | Clients can register for a queue using a barcode scan or queue ID.         | Pending     |     Ale      |         |
 | 8      | CLI-OAUTH     | Clients can authenticate via OAuth during registration.                    | Pending     |     Wahyu      |         |
-| 9      | CLI-DATA      | Clients must provide their email, phone number, and full name during registration. | Pending     |           |         |
-| 10     | CLI-TOKEN     | Clients receive queue numbers and tokens (QR/barcode) after registration.  | Pending     |           |         |
-| 11     | Q-MANAGE      | Queues must have a name and description.                                   | Pending     |           |         |
-| 12     | Q-STATUS      | Queues must have two statuses: Active and Inactive.                        | Pending     |           |         |
+| 9      | CLI-DATA      | Clients must provide their email, phone number, and full name during registration. | Pending     |   Bryan        |         |
+| 10     | CLI-TOKEN     | Clients receive queue numbers and tokens (QR/barcode) after registration.  | Pending     |     Ariya      |         |
+| 11     | Q-MANAGE      | Queues must have a name and description.                                   | Pending     |    Erdine       |         |
+| 12     | Q-STATUS      | Queues must have two statuses: Active and Inactive.                        | Pending     |      Naufal     |         |
 | 13     | Q-PREFIX      | Queue numbers must start with a prefix (e.g., C90, XY456).                 | Pending     |           |         |
-| 14     | Q-MULTI-TELL  | A queue can have multiple Tellers assigned.                                | Pending     |           |         |
+| 14     | Q-MULTI-TELL  | A queue can have multiple Tellers assigned.                                | Pending     |   Putra        |         |
 | 15     | Q-MULTI-CLI   | A queue can have multiple Clients registered.                              | Pending     |           |         |
 
 ### States of the Status Column
