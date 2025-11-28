@@ -3,7 +3,7 @@ defmodule HiwiWeb.UserLoginLive do
 
   def render(assigns) do
     ~H"""
-    <div class="mx-auto max-w-sm">
+    <div class="mx-auto max-w-sm py-12">
       <.header class="text-center">
         Log in to account
         <:subtitle>
@@ -16,8 +16,8 @@ defmodule HiwiWeb.UserLoginLive do
       </.header>
 
       <.simple_form for={@form} id="login_form" action={~p"/users/log_in"} phx-update="ignore">
-        <.input field={@form[:email]} type="email" label="Email" required />
-        <.input field={@form[:password]} type="password" label="Password" required />
+        <.input field={@form[:email]} type="email" label="Email" placeholder="Input email" required />
+        <.input field={@form[:password]} type="password" label="Password" placeholder="Input password" required />
 
         <:actions>
           <.input field={@form[:remember_me]} type="checkbox" label="Keep me logged in" />
