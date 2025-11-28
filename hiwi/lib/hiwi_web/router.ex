@@ -18,10 +18,14 @@ defmodule HiwiWeb.Router do
     plug :accepts, ["json"]
   end
 
-  scope "/", HiwiWeb do
-    pipe_through :browser
+  pipeline :guest_layout do
+    plug :put_layout, {HiwiWeb.Layouts, :guest}
+  end
 
-    get "/", PageController, :home
+  scope "/", HiwiWeb.Guest do
+    pipe_through [:browser, :guest_layout]
+
+    get "/", GuestController, :index
   end
 
   # =======================================================
@@ -29,9 +33,9 @@ defmodule HiwiWeb.Router do
   # =======================================================
   scope "/api", HiwiWeb do
     pipe_through :api
-    
+
     # Rute API Nopal (untuk registrasi via terminal/Invoke-WebRequest)
-    post "/users", UserController, :register 
+    post "/users", UserController, :register
 
     # Rute API Anda (untuk CRUD Queue via Postman)
     resources "/queues", QueueController
@@ -54,7 +58,7 @@ defmodule HiwiWeb.Router do
   # =======================================================
   # Rute Browser/LiveView (Milik Nopal, JANGAN DIHAPUS)
   # =======================================================
-  
+
   ## Authentication routes
   scope "/", HiwiWeb do
     pipe_through [:browser, :redirect_if_user_is_authenticated]
