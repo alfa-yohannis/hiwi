@@ -1,15 +1,18 @@
 <main class="container mx-auto">
     <header class="h-[65px] shadow grid grid-cols-2 px-6">
-        <div class="flex items-center gap-3">
-            <img src={~p"/images/logo.svg"} width="50"/>
-            <span class="font-semibold text-2xl text-brand">Hiwi</span>
+        <div class="flex items-center">
+            <a href={~p"/"} class="flex gap-3">
+                <img src={~p"/images/logo.svg"} width="50"/>
+                <span class="font-semibold text-2xl text-brand">Hiwi</span>
+            </a>
         </div>
         <div class="flex justify-end items-center gap-3">
-            <button class="btn btn-sm btn-ghost">Register</button>
-            <button class="btn btn-sm btn-neutral">Log In</button>
+            <a href={~p"/users/register"} class="btn btn-sm btn-ghost">Register</a>
+            <a href={~p"/users/log_in"} class="btn btn-sm btn-accent-content">Log In</a>
         </div>
     </header>
     <div class="border-x border-slate-200 px-6">
+        <.flash_group flash={@flash} />
         <%= @inner_content %>
     </div>
 </main>
