@@ -1,8 +1,8 @@
 defmodule HiwiWeb.Router do
   use HiwiWeb, :router
 
-  # Ini (UserAuth) adalah plug Nopal untuk menangani login di browser
-  import HiwiWeb.UserAuth
+  # # Ini (UserAuth) adalah plug Nopal untuk menangani login di browser
+  # import HiwiWeb.UserAuth
 
   pipeline :browser do
     plug :accepts, ["html"]
@@ -11,7 +11,7 @@ defmodule HiwiWeb.Router do
     plug :put_root_layout, html: {HiwiWeb.Layouts, :root}
     plug :protect_from_forgery
     plug :put_secure_browser_headers
-    plug :fetch_current_user # Plug Nopal untuk cek login
+    # plug :fetch_current_user # Plug Nopal untuk cek login
   end
 
   pipeline :api do
@@ -19,7 +19,7 @@ defmodule HiwiWeb.Router do
   end
 
   pipeline :guest_layout do
-    plug :put_layout, {HiwiWeb.Layouts, :guest}
+    plug :put_layout, html: {HiwiWeb.Layouts, :guest}
   end
 
   scope "/", HiwiWeb.Guest do
@@ -28,18 +28,28 @@ defmodule HiwiWeb.Router do
     get "/", GuestController, :index
   end
 
+  scope "/auth", HiwiWeb.Auth do
+    pipe_through [:browser, :guest_layout]
+
+    get "/register", AuthController, :show_registration_page
+    post "/register", AuthController, :register_user
+
+    get "/login", AuthController, :show_login_page
+    post "/login", AuthController, :authenticate_user
+  end
+
   # =======================================================
   # Rute API (Tempat Tugas Anda dan Tes Terminal)
   # =======================================================
-  scope "/api", HiwiWeb do
-    pipe_through :api
+  # scope "/api", HiwiWeb do
+  #   pipe_through :api
 
-    # Rute API Nopal (untuk registrasi via terminal/Invoke-WebRequest)
-    post "/users", UserController, :register
+  #   # Rute API Nopal (untuk registrasi via terminal/Invoke-WebRequest)
+  #   post "/users", UserController, :register
 
-    # Rute API Anda (untuk CRUD Queue via Postman)
-    resources "/queues", QueueController
-  end
+  #   # Rute API Anda (untuk CRUD Queue via Postman)
+  #   resources "/queues", QueueController
+  # end
   # =======================================================
 
 
@@ -60,39 +70,40 @@ defmodule HiwiWeb.Router do
   # =======================================================
 
   ## Authentication routes
-  scope "/", HiwiWeb do
-    pipe_through [:browser, :redirect_if_user_is_authenticated]
+  # scope "/", HiwiWeb do
+  #   pipe_through [:browser, :guest_layout, :redirect_if_user_is_authenticated]
 
-    live_session :redirect_if_user_is_authenticated,
-      on_mount: [{HiwiWeb.UserAuth, :redirect_if_user_is_authenticated}] do
-      live "/users/register", UserRegistrationLive, :new
-      live "/users/log_in", UserLoginLive, :new
-      live "/users/reset_password", UserForgotPasswordLive, :new
-      live "/users/reset_password/:token", UserResetPasswordLive, :edit
-    end
+  #   live_session :redirect_if_user_is_authenticated,
+  #     on_mount: [{HiwiWeb.UserAuth, :redirect_if_user_is_authenticated}],
+  #     layout: {HiwiWeb.Layouts, :guest} do
+  #     live "/users/register", UserRegistrationLive, :new
+  #     live "/users/log_in", UserLoginLive, :new
+  #     live "/users/reset_password", UserForgotPasswordLive, :new
+  #     live "/users/reset_password/:token", UserResetPasswordLive, :edit
+  #   end
 
-    post "/users/log_in", UserSessionController, :create
-  end
+  #   post "/users/log_in", UserSessionController, :create
+  # end
 
-  scope "/", HiwiWeb do
-    pipe_through [:browser, :require_authenticated_user]
+  # scope "/", HiwiWeb do
+  #   pipe_through [:browser, :require_authenticated_user]
 
-    live_session :require_authenticated_user,
-      on_mount: [{HiwiWeb.UserAuth, :ensure_authenticated}] do
-      live "/users/settings", UserSettingsLive, :edit
-      live "/users/settings/confirm_email/:token", UserSettingsLive, :confirm_email
-    end
-  end
+  #   live_session :require_authenticated_user,
+  #     on_mount: [{HiwiWeb.UserAuth, :ensure_authenticated}] do
+  #     live "/users/settings", UserSettingsLive, :edit
+  #     live "/users/settings/confirm_email/:token", UserSettingsLive, :confirm_email
+  #   end
+  # end
 
-  scope "/", HiwiWeb do
-    pipe_through [:browser]
+  # scope "/", HiwiWeb do
+  #   pipe_through [:browser]
 
-    delete "/users/log_out", UserSessionController, :delete
+  #   delete "/users/log_out", UserSessionController, :delete
 
-    live_session :current_user,
-      on_mount: [{HiwiWeb.UserAuth, :mount_current_user}] do
-      live "/users/confirm/:token", UserConfirmationLive, :edit
-      live "/users/confirm", UserConfirmationInstructionsLive, :new
-    end
-  end
+  #   live_session :current_user,
+  #     on_mount: [{HiwiWeb.UserAuth, :mount_current_user}] do
+  #     live "/users/confirm/:token", UserConfirmationLive, :edit
+  #     live "/users/confirm", UserConfirmationInstructionsLive, :new
+  #   end
+  # end
 end
