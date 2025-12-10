@@ -42,9 +42,14 @@ defmodule HiwiWeb.Router do
     pipe_through :browser
 
     get "/", QueueController, :index
+    post "/", QueueController, :register
+
     get "/new", QueueController, :show_registration_page
 
-    post "/", QueueController, :register
+    get "/edit/:id", QueueController, :show_edit_page
+    put "/edit/:id", QueueController, :edit
+
+    delete "/delete/:id", QueueController, :delete
   end
 
   # =======================================================
