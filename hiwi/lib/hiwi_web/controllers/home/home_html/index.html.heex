@@ -1,0 +1,127 @@
+<div 
+  class="min-h-[calc(100vh-65px)] py-24 flex flex-col items-center gap-4 text-center
+    "
+>
+
+  <%= if @current_user do %>
+    <div class="grid grid-cols-4 gap-4">
+      <a href="/queues"
+        class="group relative overflow-hidden rounded-2xl bg-white border border-gray-200 shadow-sm hover:shadow-md transition-all p-6">
+
+        <!-- Accent gradient background -->
+        <div class="absolute top-0 right-0 w-24 h-24 
+          bg-gradient-to-br 
+          from-[#FD4F00]/10 
+          to-[#FD4F00]/20 
+          rounded-bl-full">
+        </div>
+
+
+        <div class="relative flex flex-col gap-4">
+
+          <!-- Icon container -->
+          <div class="w-12 h-12 rounded-xl bg-[#FED3BF] flex items-center justify-center 
+                      text-brand group-hover:bg-[#FFB799] transition">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none"
+              viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+              class="w-6 h-6">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M15 19.128a9.38 9.38 0 0 0 3.745-.753 
+                  3.376 3.376 0 0 0-6.49 0A9.38 9.38 0 0 0 15 19.128Z" />
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M15 11.25a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM4.5 
+                  19.128a9.38 9.38 0 0 0 3.745-.753 3.376 
+                  3.376 0 0 0-6.49 0 9.38 9.38 0 0 0 3.745.753Z" />
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M7.5 11.25a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
+            </svg>
+          </div>
+
+          <!-- Title + description -->
+          <div>
+            <h3 class="text-lg font-semibold text-gray-800">
+              Manage Queues
+            </h3>
+
+            <p class="text-gray-500 text-sm mt-1">
+              Manage queues and assign tellers.
+            </p>
+          </div>
+
+          <!-- Call to action -->
+          <span class="text-brand text-sm font-medium mt-2 flex items-center gap-1">
+            Open
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none"
+                viewBox="0 0 24 24" stroke-width="2"
+                stroke="currentColor" class="w-4 h-4">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M13.5 4.5 21 12l-7.5 7.5M21 12H3" />
+            </svg>
+          </span>
+
+        </div>
+      </a>
+    </div>
+
+  <% else %>
+    <!-- Headline -->
+    <h1 
+      class="text-4xl md:text-6xl font-extrabold leading-tight text-neutral"
+      data-aos="fade-up"
+      data-aos-duration="800"
+    >
+      Welcome to <span class="text-brand">Hiwi</span>
+    </h1>
+
+    <!-- Subheadline -->
+    <p 
+      class="text-lg md:text-2xl text-gray-600 mt-4 max-w-2xl"
+      data-aos="fade-up"
+      data-aos-duration="1000"
+      data-aos-delay="150"
+    >
+      A Queue Management System <br />
+      An OBE project for Web Application Development Class
+    </p>
+
+    <!-- Short pitch text -->
+    <p 
+      class="text-gray-500 text-base md:text-lg max-w-xl mt-6"
+      data-aos="fade-up"
+      data-aos-duration="1100"
+      data-aos-delay="250"
+    >
+      Manage queues efficiently with a clean interface, real-time updates, and a seamless user experience.
+    </p>
+
+    <!-- CTA Buttons -->
+    <div 
+      class="flex flex-col md:flex-row gap-4 mt-10"
+      data-aos="fade-up"
+      data-aos-duration="1200"
+      data-aos-delay="350"
+    >
+
+      <!-- Source Code Button -->
+      <a 
+        href="https://github.com/alfa-yohannis/hiwi" 
+        target="_blank"
+        class="btn gap-2 px-6"
+      >
+        <.icon name="hero-code-bracket" />
+        Source Code
+      </a>
+
+      <!-- Join Queue Button -->
+      <a 
+        href={~p"/queues"}
+        class="btn btn-outline btn-accent-content gap-2 px-6"
+      >
+        <.icon name="hero-queue-list" />
+        Join Queue
+      </a>
+
+    </div>
+  <% end %>
+</div>
+
