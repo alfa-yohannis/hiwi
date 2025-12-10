@@ -21,8 +21,8 @@ A queue has a human-friendly name for easy identification and a description that
 
 | Number | Code          | Description                                                                 | Status      | Developer | Remarks |
 |--------|---------------|-----------------------------------------------------------------------------|-------------|-----------|---------|
-| 1      | USR-REG       | Users must register to use the system.                                     | Completed   | Naufal          |         |
-| 2      | OWN-CRUD      | Owners can manage (create, read, update, delete) queues.                   | Completed   |Erdine         |         |
+| 1      | USR-REG       | Users must register to use the system.                                     | Completed   | Naufal, Ariya          |         |
+| 2      | OWN-CRUD      | Owners can manage (create, read, update, delete) queues.                   | Completed   |Erdine, Ariya         |         |
 | 3      | OWN-ASSIGN    | Owners can assign Tellers to queues via invitations.                       | Pending     |  Alejandro        |         |
 | 4      | OWN-RESET     | Owners can reset queue numbers back to zero.                               | Pending     |    Affan       |         |
 | 5      | OWN-INCREMENT | Owners can increment queue numbers.                                        | Pending     | Kenneth          |         |
