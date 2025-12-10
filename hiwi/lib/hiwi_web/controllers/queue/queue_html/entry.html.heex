@@ -1,0 +1,57 @@
+<div class="flex flex-col items-center justify-center min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+  <div class="max-w-md w-full space-y-8 bg-white p-10 rounded-xl shadow-lg">
+    <div>
+      <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
+        Ticket Detail
+      </h2>
+      <p class="mt-2 text-center text-sm text-gray-600">
+        Please save this ticket or screenshot this page.
+      </p>
+    </div>
+
+    <div class="mt-8 space-y-6">
+      <div class="flex flex-col items-center">
+        <%= if @queue_entry.qr_code do %>
+          <img src={@queue_entry.qr_code} alt="QR Code" class="w-64 h-64 object-contain border-4 border-gray-200 rounded-lg" />
+        <% else %>
+          <div class="w-64 h-64 flex items-center justify-center bg-gray-100 rounded-lg text-gray-400">
+            No QR Code
+          </div>
+        <% end %>
+      </div>
+
+      <div class="border-t border-gray-200 pt-6">
+        <dl class="divide-y divide-gray-200">
+          <div class="py-4 sm:grid sm:grid-cols-3 sm:gap-4">
+            <dt class="text-sm font-medium text-gray-500">Name</dt>
+            <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2"><%= @queue_entry.full_name %></dd>
+          </div>
+          <div class="py-4 sm:grid sm:grid-cols-3 sm:gap-4">
+            <dt class="text-sm font-medium text-gray-500">Phone</dt>
+            <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2"><%= @queue_entry.phone_number %></dd>
+          </div>
+          <div class="py-4 sm:grid sm:grid-cols-3 sm:gap-4">
+            <dt class="text-sm font-medium text-gray-500">Email</dt>
+            <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2"><%= @queue_entry.email %></dd>
+          </div>
+          <div class="py-4 sm:grid sm:grid-cols-3 sm:gap-4">
+             <dt class="text-sm font-medium text-gray-500">Queue Number</dt>
+             <dd class="mt-1 text-2xl font-bold text-indigo-600 sm:mt-0 sm:col-span-2">#<%= @queue_entry.queue_number %></dd>
+          </div>
+          <div class="py-4 sm:grid sm:grid-cols-3 sm:gap-4">
+             <dt class="text-sm font-medium text-gray-500">Queue</dt>
+             <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2"><%= @queue_entry.queue.name %></dd>
+          </div>
+        </dl>
+      </div>
+    </div>
+
+    <div class="mt-5 sm:mt-8 sm:flex sm:justify-center">
+      <div class="rounded-md shadow">
+        <a href={~p"/queues"} class="btn btn-neutral btn-sm">
+          Back to Queues
+        </a>
+      </div>
+    </div>
+  </div>
+</div>

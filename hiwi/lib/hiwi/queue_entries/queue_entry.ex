@@ -6,6 +6,8 @@ defmodule Hiwi.QueueEntries.QueueEntry do
     field(:full_name, :string)
     field(:phone_number, :string)
     field(:email, :string)
+    field(:qr_code, :string)
+    field(:queue_number, :integer)
 
     belongs_to(:queue, Hiwi.Queues.Queue)
 
@@ -14,7 +16,7 @@ defmodule Hiwi.QueueEntries.QueueEntry do
 
   def changeset(queue, attrs) do
     queue
-    |> cast(attrs, [:full_name, :phone_number, :email, :queue_id])
+    |> cast(attrs, [:full_name, :phone_number, :email, :queue_id, :qr_code, :queue_number])
     |> validate_required([:full_name, :phone_number, :email, :queue_id])
     |> validate_format(:email, ~r/^[^\s@]+@[^\s@]+\.[^\s@]+$/)
     |> validate_format(:phone_number, ~r/^[0-9]{10,13}$/)

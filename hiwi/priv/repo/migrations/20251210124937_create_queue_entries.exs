@@ -7,6 +7,8 @@ defmodule Hiwi.Repo.Migrations.CreateQueueEntries do
       add :full_name, :string
       add :phone_number, :string
       add :email, :string
+      add :qr_code, :string
+      add :queue_number, :integer
 
       timestamps()
     end

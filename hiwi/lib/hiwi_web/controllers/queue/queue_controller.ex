@@ -110,14 +110,19 @@ defmodule HiwiWeb.Queue.QueueController do
 
   def join(conn, %{"id" => queue_id, "queue_entry" => queue_entry}) do
     case QueueEntries.create_queue_entry(queue_entry, queue_id) do
-      {:ok, _queue_entry} ->
+      {:ok, queue_entry} ->
         conn
         |> put_flash(:info, "Queue has been joined successfully.")
-        |> redirect(to: ~p"/queues")
+        |> redirect(to: ~p"/queues/entry/#{queue_entry.id}")
 
       {:error, %Ecto.Changeset{} = changeset} ->
         conn
         |> render(:join, changeset: changeset, queue_id: queue_id)
     end
+  end
+
+  def show_queue_entry_page(conn, %{"id" => entry_id}) do
+    queue_entry = QueueEntries.get_queue_entry!(entry_id)
+    render(conn, :entry, queue_entry: queue_entry)
   end
 end

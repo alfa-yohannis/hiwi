@@ -53,6 +53,8 @@ defmodule HiwiWeb.Router do
 
     get "/join/:id", QueueController, :show_join_queue_page
     post "/join/:id", QueueController, :join
+
+    get "/entry/:id", QueueController, :show_queue_entry_page
   end
 
   # =======================================================
