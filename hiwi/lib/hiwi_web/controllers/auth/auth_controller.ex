@@ -2,15 +2,14 @@ defmodule HiwiWeb.Auth.AuthController do
   use HiwiWeb, :controller
 
   alias Hiwi.Users
-  alias Hiwi.Users.User
 
   def show_registration_page(conn, _params) do
-    changeset = Users.change_user(%User{})
+    changeset = Users.build_registration_changeset()
     render(conn, :register, changeset: changeset)
   end
 
   def show_login_page(conn, _params) do
-    changeset = Users.change_user(%User{})
+    changeset = Users.build_login_changeset()
     render(conn, :login, changeset: changeset)
   end
 
@@ -19,7 +18,8 @@ defmodule HiwiWeb.Auth.AuthController do
       {:ok, _user} ->
         conn
         |> put_flash(:info, "Account successfully created, please login.")
-        |> redirect(to: ~p"/auth/register")
+        |> redirect(to: ~p"/auth/login")
+
       {:error, %Ecto.Changeset{} = changeset} ->
         conn
         |> put_flash(:error, "Ups, please fill in the form correctly.")
@@ -34,9 +34,10 @@ defmodule HiwiWeb.Auth.AuthController do
         |> put_flash(:info, "Welcome back, #{user.fullname}")
         |> put_session(:user_id, user.id)
         |> redirect(to: ~p"/")
+
       {:error, _reason} ->
         conn
-        |> put_flash(:error, "Ups, ada data yang belum pas. Cek lagi ya.")
+        |> put_flash(:error, "Ups, please check your credentials")
         |> redirect(to: ~p"/auth/login")
     end
   end
