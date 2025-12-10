@@ -1,0 +1,32 @@
+<div class="flex justify-center py-9">
+  <.simple_form class="w-11/12 md:w-1/2 lg:w-1/4" :let={f} for={@changeset} action={~p"/queues/edit/#{@queue.id}"}>
+    
+    <.header class="text-center">
+        Edit Queue
+    </.header>
+    
+    <.input field={f[:name]} type="text" label="Name" placeholder="Input name" required />
+    
+    <.input field={f[:prefix]} type="text" label="Prefix" placeholder="Input prefix" required />
+
+    <.input 
+      field={f[:description]} 
+      type="textarea" 
+      label="Description" 
+      placeholder="Input description (Optional)" 
+    />
+    
+    <.input field={f[:max_number]} type="number" min="1" label="Max Number" placeholder="Input max number" required />
+    
+    <.input
+    field={f[:status]}
+    type="select"
+    label="Status"
+    options={[Active: "active", Inactive: "inactive"]}
+    />
+
+    <:actions>
+      <.button class="w-full">Update Queue</.button>
+    </:actions>
+  </.simple_form>
+</div>

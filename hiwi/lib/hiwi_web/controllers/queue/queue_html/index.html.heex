@@ -1,0 +1,81 @@
+<main class="mx-auto max-w-5xl py-12">
+  <div class="flex flex-col gap-3 overflow-x-auto">
+    
+    <%= if @current_user && @current_user.role == :owner do %>
+      <a 
+        href={~p"/queues/new"} 
+        class="w-fit btn btn-sm btn-neutral"
+      >
+        <.icon name="hero-plus" class="w-5 h-5" />
+        Create Queue
+      </a>
+    <% else %>
+      <h1 class="font-semibold">Available Queue List</h1>
+    <% end %>
+
+    <table class="table w-full">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Prefix</th>
+          <th>Description</th>
+          <th>Max Number</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <%= if Enum.empty?(@queues) do %>
+          <tr>
+            <td colspan="6" class="text-center text-gray-500 py-4">
+              <%= if @current_user && @current_user.role == :owner do %>
+                You haven't created any queues yet.
+              <% else %>
+                No queues available.
+              <% end %>
+            </td>
+          </tr>
+        <% else %>
+          <%= for queue <- @queues do %>
+            <tr>
+              <td><%= queue.name %></td>
+              <td><%= queue.prefix %></td>
+              <td><%= queue.description || "-" %></td>
+              <td><%= queue.max_number %></td>
+              <td>
+                <span class={if queue.status == :active, do: "badge badge-sm badge-success text-white", else: "badge badge-sm badge-error text-white"}>
+                  <%= Phoenix.Naming.humanize(queue.status) %>
+                </span>
+              </td>
+              <td class="flex gap-3">                
+                <%= if is_nil(@current_user) do %>
+                  <.link
+                    navigate={~p"/queues/join/#{queue.id}"}
+                    class="text-xs font-semibold"
+                  >
+                    Join
+                  </.link>
+                <% else %>
+                  <.link
+                    navigate={~p"/queues/edit/#{queue.id}"}
+                    class="text-xs text-warning font-semibold"
+                  >
+                    Edit
+                  </.link>
+                  <.link
+                    href={~p"/queues/delete/#{queue.id}"}
+                    method="delete"
+                    data-confirm="Delete this queue?"
+                    class="text-xs text-error font-semibold"
+                  >
+                    Delete
+                  </.link>
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</main>
