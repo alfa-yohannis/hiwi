@@ -59,8 +59,6 @@ defmodule HiwiWeb.Queue.QueueController do
 
   def edit(conn, %{"id" => queue_id, "queue" => queue}) do
     old_queue = Queues.get_queue!(queue_id)
-    changeset = Queues.build_edit_queue_changeset(old_queue, queue)
-
     case Queues.update_queue(old_queue, queue) do
       {:ok, _queue} ->
         conn
