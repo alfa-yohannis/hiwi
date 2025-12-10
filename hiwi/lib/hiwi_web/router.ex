@@ -38,6 +38,15 @@ defmodule HiwiWeb.Router do
     get "/logout", AuthController, :logout
   end
 
+  scope "/queues", HiwiWeb.Queue do
+    pipe_through :browser
+
+    get "/", QueueController, :index
+    get "/new", QueueController, :show_registration_page
+
+    post "/", QueueController, :register
+  end
+
   # =======================================================
   # Rute API (Tempat Tugas Anda dan Tes Terminal)
   # =======================================================
