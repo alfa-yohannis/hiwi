@@ -41,4 +41,11 @@ defmodule HiwiWeb.Auth.AuthController do
         |> redirect(to: ~p"/auth/login")
     end
   end
+
+  def logout(conn, _params) do
+    conn
+    |> configure_session(drop: true)
+    |> put_flash(:info, "You've been signed out")
+    |> redirect(to: "/")
+  end
 end
