@@ -50,6 +50,9 @@ defmodule HiwiWeb.Router do
     put "/edit/:id", QueueController, :edit
 
     delete "/delete/:id", QueueController, :delete
+
+    get "/join/:id", QueueController, :show_join_queue_page
+    post "/join/:id", QueueController, :join
   end
 
   # =======================================================
