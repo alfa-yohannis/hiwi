@@ -11,6 +11,8 @@ defmodule HiwiWeb.Router do
     plug :put_root_layout, html: {HiwiWeb.Layouts, :root}
     plug :protect_from_forgery
     plug :put_secure_browser_headers
+    plug HiwiWeb.Plugs.SetCurrentUser
+    plug :put_layout, html: {HiwiWeb.Layouts, :app}
     # plug :fetch_current_user # Plug Nopal untuk cek login
   end
 
@@ -18,24 +20,22 @@ defmodule HiwiWeb.Router do
     plug :accepts, ["json"]
   end
 
-  pipeline :guest_layout do
-    plug :put_layout, html: {HiwiWeb.Layouts, :guest}
-  end
+  scope "/", HiwiWeb.Home do
+    pipe_through :browser
 
-  scope "/", HiwiWeb.Guest do
-    pipe_through [:browser, :guest_layout]
-
-    get "/", GuestController, :index
+    get "/", HomeController, :index
   end
 
   scope "/auth", HiwiWeb.Auth do
-    pipe_through [:browser, :guest_layout]
+    pipe_through :browser
 
     get "/register", AuthController, :show_registration_page
     post "/register", AuthController, :register_user
 
     get "/login", AuthController, :show_login_page
     post "/login", AuthController, :authenticate_user
+
+    get "/logout", AuthController, :logout
   end
 
   # =======================================================

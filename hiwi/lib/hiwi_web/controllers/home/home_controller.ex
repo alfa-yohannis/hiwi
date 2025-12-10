@@ -1,4 +1,4 @@
-defmodule HiwiWeb.Guest.GuestController do
+defmodule HiwiWeb.Home.HomeController do
     use HiwiWeb, :controller
 
     def index(conn, _params) do
