@@ -1,0 +1,50 @@
+<main class="mx-auto max-w-5xl py-12">
+  <div class="flex flex-col gap-3 overflow-x-auto">
+    
+    <a 
+      href={~p"/queues/new"} 
+      class="w-fit btn btn-sm btn-neutral"
+    >
+      Create Queue
+    </a>
+
+    <table class="table w-full">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Prefix</th>
+          <th>Description</th>
+          <th>Max Number</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <%= if Enum.empty?(@queues) do %>
+          <tr>
+            <td colspan="6" class="text-center text-gray-500 py-4">
+              You haven't created any queues yet.
+            </td>
+          </tr>
+        <% else %>
+          <%= for queue <- @queues do %>
+            <tr>
+              <td><%= queue.name %></td>
+              <td><%= queue.prefix %></td>
+              <td><%= queue.description %></td>
+              <td><%= queue.max_number %></td>
+              <td>
+                <span class={if queue.status == :active, do: "badge badge-success", else: "badge badge-error"}>
+                  <%= Phoenix.Naming.humanize(queue.status) %>
+                </span>
+              </td>
+              <td>
+                <a href={~p"/queues/#{queue.id}/edit"} class="btn btn-xs btn-outline">Edit</a>
+              </td>
+            </tr>
+          <% end %>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</main>
