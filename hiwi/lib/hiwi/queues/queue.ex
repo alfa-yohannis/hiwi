@@ -1,46 +1,47 @@
 defmodule Hiwi.Queues.Queue do
   use Ecto.Schema
   import Ecto.Changeset
-  # Hapus alias Queue yang tidak perlu, karena kita ada di modul Queue
-  # alias Hiwi.Queues.Queue 
+
+  @queue_status [:active, :inactive]
+
+  @required_fields [:owner_id, :name, :prefix, :max_number, :status]
+
+  @optional_fields [:description]
 
   schema "queues" do
     field :name, :string
     field :description, :string
     field :prefix, :string
-    field :max_number, :integer
-    
-    # Field ini punya nilai default
-    field :current_number, :integer, default: 0 
-    field :status, :string, default: "Inactive" 
 
-    # === INI PERBAIKANNYA ===
-    # Hapus tanda '#' untuk mengaktifkan kembali relasi ke User
-    belongs_to :owner, Hiwi.Accounts.User 
+    field :current_number, :integer
+    field :max_number, :integer
+
+    field :status, Ecto.Enum, values: @queue_status
+    belongs_to :owner, Hiwi.Users.User
 
     timestamps(type: :utc_datetime)
   end
 
-  @doc false
-  # === INI PERBAIKAN UTAMANYA ===
-  # Mengganti %Queue{} (yang ambigu) dengan %__MODULE__{}
-  # __MODULE__ secara otomatis merujuk ke Hiwi.Queues.Queue
-  def changeset(%__MODULE__{} = queue, attrs) do
+  def changeset(queue, attrs) do
     queue
-    # Memasukkan semua field yang dibutuhkan (termasuk owner_id)
-    |> cast(attrs, [:name, :description, :prefix, :max_number, :owner_id, :current_number, :status])
-    
-    # HANYA mewajibkan field yang harus diisi oleh Owner
-    |> validate_required([:name, :description, :prefix, :max_number, :owner_id]) 
-    
-    # Menambahkan validasi tambahan
+    |> cast(attrs, @required_fields ++ @optional_fields)
+
+    |> validate_required(@required_fields)
+
+    |> unique_constraint(:prefix)
+
     |> validate_number(:max_number, greater_than: 0)
-    |> validate_number(:current_number, greater_than_or_equal_to: 0)
-    |> validate_inclusion(:status, ["Active", "Inactive"]) # Membatasi nilai status
-    
-    # === INI PERBAIKAN PENTING KEDUA ===
-    # Kita harus menambahkan foreign_key_constraint 
-    # agar error database-nya lebih jelas jika owner_id tidak ada
-    |> foreign_key_constraint(:owner_id) 
+    |> validate_change(:current_number, fn :current_number, value ->
+        if is_integer(value) and value >= 0 do
+            []
+        else
+            [current_number: "must be greater than or equal to 0"]
+        end
+      end)
+
+    |> validate_length(:prefix, min: 1, max: 10)
+    |> validate_length(:name, min: 3, max: 100)
+
+    |> validate_format(:prefix, ~r/^[A-Z0-9]+$/)
   end
 end
