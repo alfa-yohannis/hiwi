@@ -106,12 +106,11 @@
 defmodule Hiwi.Queues do
   alias Hiwi.Repo
   alias Hiwi.Queues.Queue
-  alias Hiwi.Users.User # Alias untuk relasi
+  alias Hiwi.Users.User
+
   alias Ecto.Changeset
 
   import Ecto.Query, only: [from: 2]
-
-  # --- READ OPERATIONS ---
 
   @doc """
   Mengembalikan daftar semua antrian, dan memuat owner-nya.
@@ -121,22 +120,20 @@ defmodule Hiwi.Queues do
   end
 
   @doc """
+  Mengembalikan daftar semua antrian yang aktif
+  """
+  def list_active_queues do
+    from(q in Queue, where: q.status == :active)
+    |> Repo.all()
+  end
+
+  @doc """
   Mengambil antrian berdasarkan ID.
   """
   def get_queue!(id) do
     Repo.get!(Queue, id)
     |> Repo.preload(:owner)
   end
-
-  @doc """
-  Mengambil antrian berdasarkan prefix yang unik.
-  """
-  def get_queue_by_prefix(prefix) do
-    Repo.get_by(Queue, prefix: prefix)
-    |> Repo.preload(:owner)
-  end
-
-  # --- WRITE OPERATIONS (CRUD) ---
 
   @doc """
   Membuat antrian baru.
@@ -185,6 +182,10 @@ defmodule Hiwi.Queues do
     |> Queue.changeset(attrs)
     # Ini penting agar field current_number = 0 saat form diinisialisasi
     |> Changeset.put_change(:current_number, 0)
+  end
+
+  def build_edit_queue_changeset(queue, attrs \\ %{}) do
+    Queue.changeset(queue, attrs)
   end
 
   @doc """
