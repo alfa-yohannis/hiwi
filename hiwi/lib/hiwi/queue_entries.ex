@@ -2,8 +2,6 @@ defmodule Hiwi.QueueEntries do
   alias Hiwi.Repo
   alias Hiwi.QueueEntries.QueueEntry
 
-  alias Ecto.Changeset
-
   def build_new_queue_entry_changeset(attrs \\ %{}) do
     %QueueEntry{}
     |> QueueEntry.changeset(attrs)
