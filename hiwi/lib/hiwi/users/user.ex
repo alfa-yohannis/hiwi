@@ -2,10 +2,13 @@ defmodule Hiwi.Users.User do
   use Ecto.Schema
   import Ecto.Changeset
 
+  @roles [:owner, :teller]
+
   schema "users" do
     field :fullname, :string
     field :email, :string
     field :hashed_password, :string
+    field :role, Ecto.Enum, values: @roles
 
     field :password, :string, virtual: true, redact: true
 
@@ -13,14 +16,25 @@ defmodule Hiwi.Users.User do
   end
 
   @doc false
-  def changeset(user, attrs) do
+  def registration_changeset(user, attrs) do
     user
     |> cast(attrs, [:fullname, :email, :password])
     |> validate_required([:fullname, :email, :password])
+
+    |> put_change(:role, :owner)
+
     |> validate_format(:email, ~r/@/)
     |> validate_length(:password, min: 6)
     |> unique_constraint(:email)
+
     |> put_password_hash()
+  end
+
+  @doc false
+  def login_changeset(user, attrs) do
+    user
+    |> cast(attrs, [:email, :password])
+    |> validate_required([:email, :password])
   end
 
   defp put_password_hash(changeset) do

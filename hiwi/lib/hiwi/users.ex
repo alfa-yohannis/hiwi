@@ -6,12 +6,16 @@ defmodule Hiwi.Users do
 
   def register_user(attrs \\ %{}) do
     %User{}
-    |> User.changeset(attrs)
+    |> User.registration_changeset(attrs)
     |> Repo.insert()
   end
 
-  def change_user(%User{} = user, attrs \\ %{}) do
-    User.changeset(user, attrs)
+  def build_registration_changeset() do
+    User.registration_changeset(%User{}, %{})
+  end
+
+  def build_login_changeset() do
+    User.login_changeset(%User{}, %{})
   end
 
   def authenticate_user(email, password) do
