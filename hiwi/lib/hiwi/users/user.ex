@@ -12,6 +12,7 @@ defmodule Hiwi.Users.User do
 
     field :password, :string, virtual: true, redact: true
 
+    has_many :queues, Hiwi.Queues.Queue, foreign_key: :owner_id
     timestamps(type: :utc_datetime)
   end
 
