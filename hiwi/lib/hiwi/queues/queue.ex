@@ -16,7 +16,7 @@ defmodule Hiwi.Queues.Queue do
     field :current_number, :integer, default: 0
     field :max_number, :integer, default: 999
     field :status, Ecto.Enum, values: @queue_status, default: :active
-    
+
     belongs_to :owner, User
 
     timestamps(type: :utc_datetime)
@@ -37,6 +37,6 @@ defmodule Hiwi.Queues.Queue do
       end)
     |> validate_length(:prefix, min: 1, max: 10)
     |> validate_length(:name, min: 3, max: 100)
-    |> validate_format(:prefix, ~r/^[A-Z0-9]+$/)
+    |> validate_format(:prefix, ~r/^[A-Za-z][A-Za-z0-9]*$/)
   end
 end
