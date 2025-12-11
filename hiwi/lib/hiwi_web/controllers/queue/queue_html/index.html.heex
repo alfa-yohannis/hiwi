@@ -21,7 +21,7 @@
           <th>Description</th>
           <th>Max Number</th>
           <th>Status</th>
-          <th>Actions</th>
+          <th class="w-64">Actions & Invite</th>
         </tr>
       </thead>
       <tbody>
@@ -37,7 +37,7 @@
           </tr>
         <% else %>
           <%= for queue <- @queues do %>
-            <tr>
+            <tr class="align-top">
               <td><%= queue.name %></td>
               <td><%= queue.prefix %></td>
               <td><%= queue.description || "-" %></td>
@@ -47,29 +47,56 @@
                   <%= Phoenix.Naming.humanize(queue.status) %>
                 </span>
               </td>
-              <td class="flex gap-3">                
+              
+              <td>                
                 <%= if is_nil(@current_user) do %>
                   <.link
                     navigate={~p"/queues/join/#{queue.id}"}
-                    class="text-xs font-semibold"
+                    class="text-xs font-semibold btn btn-xs btn-primary"
                   >
-                    Join
+                    Join Queue
                   </.link>
                 <% else %>
-                  <.link
-                    navigate={~p"/queues/edit/#{queue.id}"}
-                    class="text-xs text-warning font-semibold"
-                  >
-                    Edit
-                  </.link>
-                  <.link
-                    href={~p"/queues/delete/#{queue.id}"}
-                    method="delete"
-                    data-confirm="Delete this queue?"
-                    class="text-xs text-error font-semibold"
-                  >
-                    Delete
-                  </.link>
+                  <div class="flex flex-col gap-3">
+                    
+                    <div class="flex gap-3">
+                      <.link
+                        navigate={~p"/queues/edit/#{queue.id}"}
+                        class="text-xs text-warning font-semibold hover:underline"
+                      >
+                        Edit
+                      </.link>
+                      <.link
+                        href={~p"/queues/delete/#{queue.id}"}
+                        method="delete"
+                        data-confirm="Delete this queue?"
+                        class="text-xs text-error font-semibold hover:underline"
+                      >
+                        Delete
+                      </.link>
+                    </div>
+
+                    <div class="p-2 bg-gray-50 rounded border border-gray-200">
+                      <p class="text-[10px] font-bold text-gray-500 mb-1">INVITE TELLER:</p>
+                      
+                      <.form :let={f} for={%{}} action={~p"/invitations/create"} method="post" class="flex flex-col gap-2">
+                        <input type="hidden" name="queue_id" value={queue.id} />
+                        
+                        <input 
+                          type="email" 
+                          name="email" 
+                          placeholder="User Email..." 
+                          required 
+                          class="input input-xs input-bordered w-full bg-white" 
+                        />
+                        
+                        <button type="submit" class="btn btn-xs btn-neutral w-full">
+                          Send Invite
+                        </button>
+                      </.form>
+                    </div>
+
+                  </div>
                 <% end %>
               </td>
             </tr>

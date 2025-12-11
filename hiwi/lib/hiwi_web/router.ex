@@ -1,9 +1,6 @@
 defmodule HiwiWeb.Router do
   use HiwiWeb, :router
 
-  # # Ini (UserAuth) adalah plug Nopal untuk menangani login di browser
-  # import HiwiWeb.UserAuth
-
   pipeline :browser do
     plug :accepts, ["html"]
     plug :fetch_session
@@ -13,19 +10,20 @@ defmodule HiwiWeb.Router do
     plug :put_secure_browser_headers
     plug HiwiWeb.Plugs.SetCurrentUser
     plug :put_layout, html: {HiwiWeb.Layouts, :app}
-    # plug :fetch_current_user # Plug Nopal untuk cek login
   end
 
   pipeline :api do
     plug :accepts, ["json"]
   end
 
+  # --- HOMEPAGE ---
   scope "/", HiwiWeb.Home do
     pipe_through :browser
 
     get "/", HomeController, :index
   end
 
+  # --- AUTHENTICATION (Login/Register) ---
   scope "/auth", HiwiWeb.Auth do
     pipe_through :browser
 
@@ -38,6 +36,7 @@ defmodule HiwiWeb.Router do
     get "/logout", AuthController, :logout
   end
 
+  # --- QUEUE MANAGEMENT (Tugas Erdine) ---
   scope "/queues", HiwiWeb.Queue do
     pipe_through :browser
 
@@ -58,17 +57,18 @@ defmodule HiwiWeb.Router do
   end
 
   # =======================================================
-  # Rute API (Tempat Tugas Anda dan Tes Terminal)
+  # RUTE INVITATION (TUGAS ALEJANDRO - BARU DITAMBAHKAN)
   # =======================================================
-  # scope "/api", HiwiWeb do
-  #   pipe_through :api
+  scope "/invitations", HiwiWeb do
+    pipe_through :browser
 
-  #   # Rute API Nopal (untuk registrasi via terminal/Invoke-WebRequest)
-  #   post "/users", UserController, :register
-
-  #   # Rute API Anda (untuk CRUD Queue via Postman)
-  #   resources "/queues", QueueController
-  # end
+    post "/create", InvitationController, :create
+    
+    # Halaman untuk Teller merespon undangan
+    # URL: /invitations/respond?token=...
+    get "/respond", InvitationController, :show
+    post "/respond", InvitationController, :respond
+  end
   # =======================================================
 
 
@@ -85,10 +85,10 @@ defmodule HiwiWeb.Router do
   end
 
   # =======================================================
-  # Rute Browser/LiveView (Milik Nopal, JANGAN DIHAPUS)
+  # Rute Browser/LiveView (Milik Nopal - Kode Bawaan)
+  # (Dibiarkan dikomentari sesuai file aslimu)
   # =======================================================
 
-  ## Authentication routes
   # scope "/", HiwiWeb do
   #   pipe_through [:browser, :guest_layout, :redirect_if_user_is_authenticated]
 
