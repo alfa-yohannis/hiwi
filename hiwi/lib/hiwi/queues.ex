@@ -102,6 +102,10 @@ defmodule Hiwi.Queues do
         )
     end
 
+    @doc """
+    Menambahkan seorang teller ke antrian tertentu jika belum terdaftar.
+    Jika teller sudah ada di antrian, tidak akan menambahkan duplikat.
+    """
     def assign_teller_to_queue(queue_id, user_id) do
         queue =
             Repo.get!(Queue, queue_id)
@@ -122,6 +126,9 @@ defmodule Hiwi.Queues do
         |> Repo.update()
     end
 
+    @doc """
+    Menghapus seorang teller dari antrian tertentu.
+    """
     def remove_teller_from_queue(queue_id, user_id) do
         queue =
             Repo.get!(Queue, queue_id)
@@ -135,12 +142,18 @@ defmodule Hiwi.Queues do
         |> Repo.update()
     end
 
+    @doc """
+    Mengambil daftar semua teller yang terdaftar pada antrian tertentu.
+    """
     def list_tellers_for_queue(queue_id) do
         Repo.get!(Queue, queue_id)
         |> Repo.preload(:tellers)
         |> Map.get(:tellers)
     end
 
+    @doc """
+    Memeriksa apakah seorang user sudah menjadi teller pada antrian tertentu.
+    """
     def teller_assigned_to_queue?(queue_id, user_id) do
         query =
         from(qt in "queue_tellers",
