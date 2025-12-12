@@ -36,52 +36,41 @@
     </.simple_form>
 
 
-    <!-- ASSIGN & LIST TELLER -->
-    <div class="w-11/12 md:w-1/2 lg:w-1/3 py-15 gap-10">
+    <!-- ASSIGNED TELLERS + ASSIGN FORM -->
+    <div class="w-11/12 md:w-1/2 lg:w-1/3 p-6 flex flex-col gap-10 mt-6">
+
+        <!-- ASSIGNED TELLERS -->
         <.header class="text-center">
-            Assign Teller
+            Assigned Tellers
         </.header>
 
-        <!-- ASSIGN -->
-        <.form :let={f}
-            for={%{}}
-            action={~p"/queues/#{@queue.id}/assign_teller"}
-            method="post"
-            class="space-y-4"
+        <.queue_teller_list
+            tellers={@queue.tellers}
+            queue_id={@queue.id}
+            class="mt-10 border p-4 rounded-lg bg-white shadow"
+        />
+        
+        <%= if @current_user.role == :owner do %>
+            <div class="border-t my-5 border-gray-200"></div>
+
+            <!-- ASSIGN TELLER FORM -->
+            <.header class="text-center">
+                Assign Teller
+            </.header>
+
+            <.form :let={f}
+                for={%{}}
+                action={~p"/queues/#{@queue.id}/assign_teller"}
+                method="post"
+                class="space-y-4"
             >
+                <.select_users 
+                    users={@available_users} 
+                    name="user_id"
+                />
 
-            <.select_users 
-                users={@available_users} 
-                name="user_id"
-            />
-
-            <.button class="w-full">Add Teller</.button>
-        </.form>
-
-        <div class="border-t my-5"></div>
-
-        <h3 class="text-lg font-semibold mb-3">Assigned Tellers</h3>
-
-        <ul class="space-y-3">
-            <%= for teller <- @queue.tellers do %>
-                <li class="flex justify-between items-center bg-gray-100 p-3 rounded-lg">
-                    <span><%= teller.fullname %> – <%= teller.email %></span>
-
-                    <form 
-                        method="post" 
-                        action={"/queues/#{@queue.id}/remove_teller/#{teller.id}"}
-                    >
-                        <input type="hidden" name="_method" value="delete" />
-
-                        <button
-                            class="bg-red-600 text-white px-3 py-1 rounded-lg hover:bg-red-700 text-sm"
-                        >
-                            Remove
-                        </button>
-                    </form>
-                </li>
-            <% end %>
-        </ul>
-
+                <.button class="w-full">Add Teller</.button>
+            </.form>
+        <% end %>
     </div>
 </div>
