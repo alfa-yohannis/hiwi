@@ -396,25 +396,59 @@ defmodule HiwiWeb.CoreComponents do
     """
   end
 
+  @doc """
+  Component Select User
+  """
   attr :name, :string, required: true
   attr :users, :list, required: true
   attr :class, :string, default: nil
-  
-  def select_users(assigns) do
-  ~H"""
-  <select
-    name={@name}
-    class={@class || "w-full border rounded-lg p-2 text-gray-700"}
-  >
-    <%= for user <- @users do %>
-      <option value={user.id}>
-        <%= user.fullname %> (<%= user.email %>)
-      </option>
-    <% end %>
-  </select>
-  """
-end
 
+  def select_users(assigns) do
+    ~H"""
+    <select
+      name={@name}
+      class={@class || "w-full border rounded-lg p-2 text-gray-700"}
+    >
+      <%= for user <- @users do %>
+        <option value={user.id}>
+          <%= user.fullname %> (<%= user.email %>)
+        </option>
+      <% end %>
+    </select>
+    """
+  end
+
+  @doc """
+  Component Teller List
+  """
+  attr :tellers, :list, required: true
+  attr :queue_id, :any, required: true
+  attr :class, :string, default: nil
+
+  def queue_teller_list(assigns) do
+    ~H"""
+      <ul class="space-y-3">
+        <%= for teller <- @tellers do %>
+          <li class="flex justify-between items-center bg-gray-100 p-3 rounded-lg">
+            <span><%= teller.fullname %> – <%= teller.email %></span>
+
+            <form
+              method="post"
+              action={"/queues/#{@queue_id}/remove_teller/#{teller.id}"}
+            >
+              <input type="hidden" name="_method" value="delete" />
+
+              <button
+                class="bg-red-600 text-white px-3 py-1 rounded-lg hover:bg-red-700 text-sm"
+              >
+                Remove
+              </button>
+            </form>
+          </li>
+        <% end %>
+      </ul>
+    """
+  end
 
   @doc """
   Renders a label.

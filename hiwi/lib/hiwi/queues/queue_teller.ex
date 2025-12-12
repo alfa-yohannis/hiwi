@@ -1,7 +1,7 @@
 defmodule Hiwi.Queues.QueueTeller do
   use Ecto.Schema
   import Ecto.Changeset
-  
+
   # PERBAIKAN: Menggunakan Hiwi.Users.User
   alias Hiwi.Users.User
   alias Hiwi.Queues.Queue
@@ -9,7 +9,6 @@ defmodule Hiwi.Queues.QueueTeller do
   schema "queue_tellers" do
     belongs_to :user, User
     belongs_to :queue, Queue
-    timestamps()
   end
 
   def changeset(queue_teller, attrs) do
