@@ -396,6 +396,26 @@ defmodule HiwiWeb.CoreComponents do
     """
   end
 
+  attr :name, :string, required: true
+  attr :users, :list, required: true
+  attr :class, :string, default: nil
+  
+  def select_users(assigns) do
+  ~H"""
+  <select
+    name={@name}
+    class={@class || "w-full border rounded-lg p-2 text-gray-700"}
+  >
+    <%= for user <- @users do %>
+      <option value={user.id}>
+        <%= user.fullname %> (<%= user.email %>)
+      </option>
+    <% end %>
+  </select>
+  """
+end
+
+
   @doc """
   Renders a label.
   """
