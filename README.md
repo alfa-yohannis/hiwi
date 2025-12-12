@@ -34,7 +34,7 @@ A queue has a human-friendly name for easy identification and a description that
 | 11     | Q-MANAGE      | Queues must have a name and description.                                   | Completed     |  Ariya         |         |
 | 12     | Q-STATUS      | Queues must have two statuses: Active and Inactive.                        | Completed    |   Ariya        |         |
 | 13     | Q-PREFIX      | Queue numbers must start with a prefix (e.g., C90, XY456).                 | Completed     | Ariya    |         |
-| 14     | Q-MULTI-TELL  | A queue can have multiple Tellers assigned.                                | On Progress     |     Astria      |         |
+| 14     | Q-MULTI-TELL  | A queue can have multiple Tellers assigned.                                | Completed     |     Astria      |         |
 | 15     | Q-MULTI-CLI   | A queue can have multiple Clients registered.                              | Completed   |     Bryan      |         |
 
 ### States of the Status Column
