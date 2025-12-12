@@ -104,6 +104,9 @@ defmodule HiwiWeb.Queue.QueueController do
         |> redirect(to: "/queues")
     end
 
+    @doc """
+    Plug untuk memastikan hanya owner antrian yang bisa mengakses action tertentu (edit, delete, assign/remove teller).
+    """
     def check_queue_owner(conn, _params) do
         %{params: %{"id" => queue_id}} = conn
 
@@ -114,7 +117,7 @@ defmodule HiwiWeb.Queue.QueueController do
                 else
                     conn
                     |> put_flash(:error, "You don't have permission to access this queue.")
-                    |> redirect(to: "/queues")
+                    |> redirect(to: "/queues/edit/#{queue_id}")
                     |> halt()
                 end
 
@@ -126,11 +129,17 @@ defmodule HiwiWeb.Queue.QueueController do
         end
     end
 
+    @doc """
+    Menampilkan halaman join queue untuk user.
+    """
     def show_join_queue_page(conn, %{"id" => queue_id}) do
         changeset = QueueEntries.build_new_queue_entry_changeset()
         render(conn, :join, changeset: changeset, queue_id: queue_id)
     end
 
+    @doc """
+    User join antrian tertentu.
+    """
     def join(conn, %{"id" => queue_id, "queue_entry" => queue_entry}) do
         case QueueEntries.create_queue_entry(queue_entry, queue_id) do
             {:ok, queue_entry} ->
@@ -144,12 +153,17 @@ defmodule HiwiWeb.Queue.QueueController do
         end
     end
 
+    @doc """
+    Menampilkan halaman detail entry antrian tertentu.
+    """
     def show_queue_entry_page(conn, %{"id" => entry_id}) do
         queue_entry = QueueEntries.get_queue_entry!(entry_id)
         render(conn, :entry, queue_entry: queue_entry)
     end
 
-    # assign_teller expects POST /queues/:id/assign_teller with "user_id" form field
+    @doc """
+    Menambahkan teller ke antrian tertentu.
+    """
     def assign_teller(conn, %{"id" => queue_id, "user_id" => user_id_str}) do
         with {queue_id_i, ""} <- Integer.parse(to_string(queue_id)),
             {user_id_i, ""} <- Integer.parse(to_string(user_id_str)),
@@ -166,7 +180,9 @@ defmodule HiwiWeb.Queue.QueueController do
         end
     end
 
-    # remove_teller: DELETE /queues/:id/remove_teller/:user_id  (or POST _method=delete)
+    @doc """
+    Menghapus teller dari antrian tertentu.
+    """
     def remove_teller(conn, %{"id" => queue_id, "user_id" => user_id_str}) do
         with {queue_id_i, ""} <- Integer.parse(to_string(queue_id)),
             {user_id_i, ""} <- Integer.parse(to_string(user_id_str)),
