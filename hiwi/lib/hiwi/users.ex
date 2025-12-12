@@ -39,7 +39,10 @@ defmodule Hiwi.Users do
         Repo.get_by(User, email: email)
     end
 
-    def list_tellers_not_assigned_to(queue_id) do # untuk menampilkan hanya teller yang belum assigned ke queue ini
+    @doc """
+    Mengambil daftar semua teller (users) yang belum di assign pada antrian tertentu.
+    """
+    def list_tellers_not_assigned_to(queue_id) do
         import Ecto.Query, only: [from: 2]
 
         from(u in User,
