@@ -16,6 +16,11 @@ defmodule HiwiWeb.CoreComponents do
   """
   use Phoenix.Component
 
+  use Phoenix.VerifiedRoutes,
+    endpoint: HiwiWeb.Endpoint,
+    router: HiwiWeb.Router,
+    statics: HiwiWeb.static_paths()
+
   alias Phoenix.LiveView.JS
   import HiwiWeb.Gettext
 
@@ -430,20 +435,18 @@ defmodule HiwiWeb.CoreComponents do
       <ul class="space-y-3">
         <%= for teller <- @tellers do %>
           <li class="flex justify-between items-center bg-gray-100 p-3 rounded-lg">
-            <span><%= teller.fullname %> – <%= teller.email %></span>
+            <span class="px-2"><%= teller.fullname %> – <%= teller.email %></span>
 
-            <form
-              method="post"
-              action={"/queues/#{@queue_id}/remove_teller/#{teller.id}"}
+            <.form
+              for={%{}}
+              action={~p"/queues/#{@queue_id}/remove_teller/#{teller.id}"}
+              method="delete"
+              class="inline"
             >
-              <input type="hidden" name="_method" value="delete" />
-
-              <button
-                class="bg-red-600 text-white px-3 py-1 rounded-lg hover:bg-red-700 text-sm"
-              >
+              <button class="text-red-600 hover:underline px-2">
                 Remove
               </button>
-            </form>
+            </.form>
           </li>
         <% end %>
       </ul>
