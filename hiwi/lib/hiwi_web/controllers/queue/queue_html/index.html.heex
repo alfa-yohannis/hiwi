@@ -70,12 +70,20 @@
                       </.link>
 
                       <.link
+                        href={~p"/queues/#{queue.id}/view"}
+                        target="_blank"
+                        class="text-xs text-purple-600 font-bold hover:underline"
+                      >
+                        VIEW
+                      </.link>
+                      <.link
                         href={~p"/queues/#{queue.id}/increment"}
                         method="put"
                         class="text-xs text-green-600 font-bold hover:underline"
                       >
                         NEXT (+)
                       </.link>
+
                       <.link
                         href={~p"/queues/#{queue.id}/reset"}
                         method="put"

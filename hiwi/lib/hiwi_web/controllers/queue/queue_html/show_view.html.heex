@@ -1,0 +1,26 @@
+<meta http-equiv="refresh" content="2">
+
+<div class="fixed inset-0 bg-gray-900 text-white flex flex-col items-center justify-center z-50">
+  
+  <h2 class="text-3xl md:text-5xl font-light tracking-widest uppercase mb-4 opacity-80">
+    <%= @queue.name %>
+  </h2>
+
+  <div class="bg-white text-gray-900 px-12 py-8 rounded-3xl shadow-2xl min-w-[300px] text-center">
+    <span class="text-[150px] font-bold leading-none tracking-tighter block">
+      <%= @queue.prefix %>
+    </span>
+  </div>
+
+  <div class="mt-8">
+    <p class="text-xl animate-pulse text-green-400 font-semibold">
+      NOMOR ANTRIAN SAAT INI
+    </p>
+  </div>
+  
+  <div class="absolute bottom-5 right-5">
+    <.link href={~p"/queues"} class="btn btn-sm btn-ghost text-white/20 hover:text-white">
+      Exit View
+    </.link>
+  </div>
+</div>
