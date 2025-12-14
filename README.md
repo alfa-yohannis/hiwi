@@ -29,24 +29,6 @@ A queue has a human-friendly name for easy identification and a description that
 | 6      | TEL-INCREMENT | Tellers can increment queue numbers assigned to them.                      | Pending     |     Wahyu      |         |
 | 7      | CLI-REGISTER  | Clients can register for a queue using a barcode scan or queue ID.         | Completed    |     Defis,Putra |         |
 | 8      | CLI-OAUTH     | Clients can authenticate via OAuth during registration.                    | Pending     |     Wahyu      |         |
-<<<<<<< HEAD
-<<<<<<< HEAD
-| 9      | CLI-DATA      | Clients must provide their email, phone number, and full name during registration. | Pending     |  Bryan         |         |
-| 10     | CLI-TOKEN     | Clients receive queue numbers and tokens (QR/barcode) after registration.  | Pending     |  Ariya         |         |
-| 11     | Q-MANAGE      | Queues must have a name and description.                                   | Pending     |  Erdine         |         |
-| 12     | Q-STATUS      | Queues must have two statuses: Active and Inactive.                        | In Progress    |   Naufal        |         |
-| 13     | Q-PREFIX      | Queue numbers must start with a prefix (e.g., C90, XY456).                 | In Progress     |   Naufal   |         |
-| 14     | Q-MULTI-TELL  | A queue can have multiple Tellers assigned.                                | Pending     |           |         |
-=======
-| 9      | CLI-DATA      | Clients must provide their email, phone number, and full name during registration. | Pending     |   Bryan        |         |
-| 10     | CLI-TOKEN     | Clients receive queue numbers and tokens (QR/barcode) after registration.  | Pending     |     Ariya      |         |
-| 11     | Q-MANAGE      | Queues must have a name and description.                                   | Pending     |    Erdine       |         |
-| 12     | Q-STATUS      | Queues must have two statuses: Active and Inactive.                        | Pending     |      Naufal     |         |
-| 13     | Q-PREFIX      | Queue numbers must start with a prefix (e.g., C90, XY456).                 | Pending     |           |         |
-| 14     | Q-MULTI-TELL  | A queue can have multiple Tellers assigned.                                | Pending     |   Putra        |         |
->>>>>>> 2dc8ba1460d2af0fcb8d06796d43978ee521a693
-| 15     | Q-MULTI-CLI   | A queue can have multiple Clients registered.                              | Pending     |           |         |
-=======
 | 9      | CLI-DATA      | Clients must provide their email, phone number, and full name during registration. | Completed     | Bryan      |         |
 | 10     | CLI-TOKEN     | Clients receive queue numbers and tokens (QR/barcode) after registration.  | Completed     |  Bryan         |         |
 | 11     | Q-MANAGE      | Queues must have a name and description.                                   | Completed     |  Ariya         |         |
