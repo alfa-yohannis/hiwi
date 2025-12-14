@@ -36,9 +36,8 @@ A queue has a human-friendly name for easy identification and a description that
 | 13     | Q-PREFIX      | Queue numbers must start with a prefix (e.g., C90, XY456).                 | Completed     | Ariya    |         |
 | 14     | Q-MULTI-TELL  | A queue can have multiple Tellers assigned.                                | Completed     |     Astria      |         |
 | 15     | Q-MULTI-CLI   | A queue can have multiple Clients registered.                              | Completed   |     Bryan      |         |
-| 16    | TEL - USER  | A user can be a teller invited via email.                              | Completed   |     Naufal, Affan, Erdine     |         |
-
-| 17    | VIEW  | A client/user can view the queue number prefix                              | Completed   |     Naufal, Affan, Erdine     |         |
+| 16    | TEL - USER  | A user can be a teller invited via email.                                     | Completed   |     Naufal, Affan, Erdine     |         |
+| 17    | VIEW  | A client/user can view the queue number prefix                                      | Completed   |     Naufal, Affan, Erdine     |         |
 
 >>>>>>> a92d43e6e7cc7d1ac62ab9a090229fea412de603
 
