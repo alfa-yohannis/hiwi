@@ -17,7 +17,7 @@
       <thead>
         <tr>
           <th>Name</th>
-          <th>Prefix</th>
+          <th>Prefix</th> 
           <th>Description</th>
           <th>Max Number</th>
           <th>Status</th>
@@ -39,7 +39,9 @@
           <%= for queue <- @queues do %>
             <tr class="align-top">
               <td><%= queue.name %></td>
+              
               <td><%= queue.prefix %></td>
+              
               <td><%= queue.description || "-" %></td>
               <td><%= queue.max_number %></td>
               <td>
@@ -59,13 +61,30 @@
                 <% else %>
                   <div class="flex flex-col gap-3">
                     
-                    <div class="flex gap-3">
+                    <div class="flex gap-3 items-center">
                       <.link
                         navigate={~p"/queues/edit/#{queue.id}"}
                         class="text-xs text-warning font-semibold hover:underline"
                       >
                         Edit
                       </.link>
+
+                      <.link
+                        href={~p"/queues/#{queue.id}/increment"}
+                        method="put"
+                        class="text-xs text-green-600 font-bold hover:underline"
+                      >
+                        NEXT (+)
+                      </.link>
+                      <.link
+                        href={~p"/queues/#{queue.id}/reset"}
+                        method="put"
+                        data-confirm="Yakin ingin mereset nomor antrean jadi 0?"
+                        class="text-xs text-blue-600 font-bold hover:underline"
+                      >
+                        RESET
+                      </.link>
+                      
                       <.link
                         href={~p"/queues/delete/#{queue.id}"}
                         method="delete"

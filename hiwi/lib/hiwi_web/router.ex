@@ -2,89 +2,96 @@ defmodule HiwiWeb.Router do
     use HiwiWeb, :router
 
     pipeline :browser do
-        plug :accepts, ["html"]
-        plug :fetch_session
-        plug :fetch_live_flash
-        plug :put_root_layout, html: {HiwiWeb.Layouts, :root}
-        plug :protect_from_forgery
-        plug :put_secure_browser_headers
-        plug HiwiWeb.Plugs.SetCurrentUser
-        plug :put_layout, html: {HiwiWeb.Layouts, :app}
+      plug :accepts, ["html"]
+      plug :fetch_session
+      plug :fetch_live_flash
+      plug :put_root_layout, html: {HiwiWeb.Layouts, :root}
+      plug :protect_from_forgery
+      plug :put_secure_browser_headers
+      plug HiwiWeb.Plugs.SetCurrentUser
+      plug :put_layout, html: {HiwiWeb.Layouts, :app}
     end
 
     pipeline :api do
-        plug :accepts, ["json"]
+      plug :accepts, ["json"]
     end
 
     # --- HOMEPAGE ---
     scope "/", HiwiWeb.Home do
-        pipe_through :browser
+      pipe_through :browser
 
-        get "/", HomeController, :index
+      get "/", HomeController, :index
     end
 
     # --- AUTHENTICATION (Login/Register) ---
     scope "/auth", HiwiWeb.Auth do
-        pipe_through :browser
+      pipe_through :browser
 
-        get "/register", AuthController, :show_registration_page
-        post "/register", AuthController, :register_user
+      get "/register", AuthController, :show_registration_page
+      post "/register", AuthController, :register_user
 
-        get "/login", AuthController, :show_login_page
-        post "/login", AuthController, :authenticate_user
+      get "/login", AuthController, :show_login_page
+      post "/login", AuthController, :authenticate_user
 
-        get "/logout", AuthController, :logout
+      get "/logout", AuthController, :logout
     end
 
-    # --- QUEUE MANAGEMENT (Tugas Erdine) ---
+    # --- QUEUE MANAGEMENT ---
     scope "/queues", HiwiWeb.Queue do
-        pipe_through :browser
+      pipe_through :browser
 
-        get "/", QueueController, :index
-        post "/", QueueController, :register
+      get "/", QueueController, :index
+      post "/", QueueController, :register
+      get "/new", QueueController, :show_registration_page
 
-        get "/new", QueueController, :show_registration_page
+      # Rute Edit, Reset, Delete
+      get "/edit/:id", QueueController, :show_edit_page
+      put "/edit/:id", QueueController, :edit
+      delete "/delete/:id", QueueController, :delete
 
-        get "/edit/:id", QueueController, :show_edit_page
-        put "/edit/:id", QueueController, :edit
+      # --- RESET (Balik ke 0) ---
+      put "/:id/reset", QueueController, :reset_number
 
-        delete "/delete/:id", QueueController, :delete
+      # --- INCREMENT (Maju +1) ---
+      put "/:id/increment", QueueController, :increment_number
 
-        get "/join/:id", QueueController, :show_join_queue_page
-        post "/join/:id", QueueController, :join
+      # --- VIEW MONITOR (Display Layar Besar) --- <--- INI YANG DITAMBAHKAN
+      get "/:id/view", QueueController, :show_view_page
+      # -----------------------------------------------------
 
-        get "/entry/:id", QueueController, :show_queue_entry_page
+      # Rute User Join / Entry
+      get "/join/:id", QueueController, :show_join_queue_page
+      post "/join/:id", QueueController, :join
+      get "/entry/:id", QueueController, :show_queue_entry_page
 
-        post "/:id/assign_teller", QueueController, :assign_teller
-        delete "/:id/remove_teller/:user_id", QueueController, :remove_teller
+      # Rute Teller
+      post "/:id/assign_teller", QueueController, :assign_teller
+      delete "/:id/remove_teller/:user_id", QueueController, :remove_teller
     end
 
     # =======================================================
-    # RUTE INVITATION (TUGAS ALEJANDRO - BARU DITAMBAHKAN)
+    # RUTE INVITATION
     # =======================================================
     scope "/invitations", HiwiWeb do
-        pipe_through :browser
+      pipe_through :browser
 
-        post "/create", InvitationController, :create
+      post "/create", InvitationController, :create
 
-        # Halaman untuk Teller merespon undangan
-        # URL: /invitations/respond?token=...
-        get "/respond", InvitationController, :show
-        post "/respond", InvitationController, :respond
+      # Halaman untuk Teller merespon undangan
+      get "/:token", InvitationController, :show
+      post "/respond", InvitationController, :respond
     end
-    # =======================================================
-
 
     # Enable LiveDashboard and Swoosh mailbox preview in development
     if Application.compile_env(:hiwi, :dev_routes) do
-        import Phoenix.LiveDashboard.Router
+      import Phoenix.LiveDashboard.Router
 
-        scope "/dev" do
+      scope "/dev" do
         pipe_through :browser
 
         live_dashboard "/dashboard", metrics: HiwiWeb.Telemetry
         forward "/mailbox", Plug.Swoosh.MailboxPreview
-        end
+      end
     end
 
     # =======================================================
@@ -128,4 +135,4 @@ defmodule HiwiWeb.Router do
     #     live "/users/confirm", UserConfirmationInstructionsLive, :new
     #   end
     # end
-end
+  end

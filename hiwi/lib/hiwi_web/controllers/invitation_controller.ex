@@ -1,68 +1,49 @@
 defmodule HiwiWeb.InvitationController do
   use HiwiWeb, :controller
-  
-  alias Hiwi.Invitations
-  alias Hiwi.Repo
-  alias Hiwi.Queues.Queue
 
-  # --- FUNGSI BARU: Owner Mengirim Undangan ---
-  def create(conn, %{"queue_id" => queue_id, "email" => email}) do
-    owner = conn.assigns.current_user
-    queue = Repo.get(Queue, queue_id)
+  alias Hiwi.Users
+  alias Hiwi.Queues
 
-    # Validasi: Pastikan Antrian ada DAN Owner-nya adalah user yang sedang login
-    if queue && queue.owner_id == owner.id do
-      case Invitations.invite_teller(queue, owner, email) do
-        {:ok, _invitation} ->
+  @doc """
+  Menangani tombol 'Send Invite' dari Dashboard Owner.
+  Logika: Cari emailnya -> Kalau ada user-nya -> Langsung jadikan Teller.
+  Tanpa kirim email/menunggu konfirmasi (biar tidak error).
+  """
+  def create(conn, %{"email" => email, "queue_id" => queue_id}) do
+    # 1. Cari User berdasarkan Email (Pastikan fungsi get_user_by_email ada di Users context)
+    case Users.get_user_by_email(email) do
+      %Hiwi.Users.User{} = user ->
+        # 2. Cek apakah dia sudah jadi teller di antrean ini?
+        if Queues.teller_assigned_to_queue?(queue_id, user.id) do
           conn
-          |> put_flash(:info, "Undangan berhasil dikirim ke #{email}!")
-          |> redirect(to: ~p"/queues") # Kembali ke daftar antrian
-          
-        {:error, :user_not_found} ->
-          conn
-          |> put_flash(:error, "User dengan email #{email} tidak ditemukan.")
+          |> put_flash(:error, "User dengan email #{email} SUDAH menjadi teller di sini.")
           |> redirect(to: ~p"/queues")
+        else
+          # 3. Masukkan sebagai Teller
+          Queues.assign_teller_to_queue(queue_id, user.id)
 
-        {:error, :already_teller} ->
           conn
-          |> put_flash(:error, "User tersebut sudah menjadi Teller di antrian ini.")
+          |> put_flash(:info, "Sukses! #{email} telah ditambahkan sebagai Teller.")
           |> redirect(to: ~p"/queues")
+        end
 
-        {:error, _} ->
-          conn
-          |> put_flash(:error, "Gagal mengirim undangan.")
-          |> redirect(to: ~p"/queues")
-      end
-    else
-      conn
-      |> put_flash(:error, "Anda tidak memiliki izin.")
-      |> redirect(to: ~p"/queues")
+      nil ->
+        # Jika email tidak ditemukan di database
+        conn
+        |> put_flash(:error, "User dengan email #{email} tidak ditemukan. Pastikan dia sudah Register dulu.")
+        |> redirect(to: ~p"/queues")
     end
   end
 
-  # --- FUNGSI LAMA: Teller Melihat Undangan ---
-  def show(conn, %{"token" => token}) do
-    current_user = conn.assigns.current_user
-    invitation = Invitations.get_invitation_by_token(token)
-
-    if invitation && invitation.invited_user_id == current_user.id do
-      render(conn, :show, token: token, invitation: invitation)
-    else
-      conn
-      |> put_flash(:error, "Undangan tidak valid.")
-      |> redirect(to: ~p"/")
-    end
+  # --- Fungsi Dummy (Biar Router Tidak Error) ---
+  # Kita biarkan ada tapi kosongkan logic-nya, karena router memanggilnya.
+  def show(conn, _params) do
+    conn
+    |> put_flash(:info, "Fitur ini belum aktif.")
+    |> redirect(to: ~p"/")
   end
 
-  # --- FUNGSI LAMA: Teller Merespon Undangan ---
-  def respond(conn, %{"token" => token, "decision" => decision}) do
-    current_user = conn.assigns.current_user
-    
-    case Invitations.respond_to_invitation(token, current_user, decision) do
-      {:ok, _} ->
-        conn |> put_flash(:info, "Respon tersimpan!") |> redirect(to: ~p"/")
-      {:error, _} ->
-        conn |> put_flash(:error, "Gagal memproses.") |> redirect(to: ~p"/")
-    end
+  def respond(conn, _params) do
+    redirect(conn, to: ~p"/")
   end
 end

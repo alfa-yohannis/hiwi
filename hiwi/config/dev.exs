@@ -3,7 +3,7 @@ import Config
 # Configure your database
 config :hiwi, Hiwi.Repo,
   username: "postgres",
-  password: "123456",
+  password: "12345",
   hostname: "localhost",
   database: "hiwi_dev",
   stacktrace: true,
@@ -83,3 +83,7 @@ config :phoenix_live_view,
 
 # Disable swoosh api client as it is only required for production adapters.
 config :swoosh, :api_client, false
+
+#CONFIG MAIL yang mengerjakan NAUFAL, AFFAN, ALE
+config :hiwi, Hiwi.Mailer,
+  adapter: Swoosh.Adapters.Local
