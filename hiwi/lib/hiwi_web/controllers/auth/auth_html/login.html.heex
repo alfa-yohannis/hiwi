@@ -1,0 +1,20 @@
+<div class="flex justify-center py-12">
+  <.simple_form class="w-11/12 md:w-1/2 lg:w-1/4" :let={f} for={@changeset} action={~p"/auth/login"}>
+    <.header class="text-center">
+        Log In to Hiwi
+        <:subtitle>
+        Don't have an account?
+        <.link navigate={~p"/auth/register"} class="font-semibold text-brand hover:underline">
+            Register here
+        </.link>
+        </:subtitle>
+    </.header>
+    
+    <.input field={f[:email]} type="email" placeholder="Input email" label="Email" required />
+    <.input field={f[:password]} type="password" placeholder="Input password" label="Password" required />
+
+    <:actions>
+      <.button class="w-full">Log In</.button>
+    </:actions>
+  </.simple_form>
+</div>

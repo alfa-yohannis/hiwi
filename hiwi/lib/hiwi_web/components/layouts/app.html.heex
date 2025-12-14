@@ -1,32 +1,26 @@
-<header class="px-4 sm:px-6 lg:px-8">
-  <div class="flex items-center justify-between border-b border-zinc-100 py-3 text-sm">
-    <div class="flex items-center gap-4">
-      <a href="/">
-        <img src={~p"/images/logo.svg"} width="36" />
-      </a>
-      <p class="bg-brand/5 text-brand rounded-full px-2 font-medium leading-6">
-        v<%= Application.spec(:phoenix, :vsn) %>
-      </p>
+<main class="container mx-auto">
+    <header class="h-[65px] shadow grid grid-cols-2 px-6">
+        <div class="flex items-center">
+            <a href={~p"/"} class="flex gap-3">
+                <img src={~p"/images/logo.svg"} width="50"/>
+                <span class="font-semibold text-2xl text-brand">Hiwi</span>
+            </a>
+        </div>
+        <div class="flex justify-end items-center gap-4">
+            <%= if @current_user do %>
+                <h1 class="flex items-center gap-1">
+                    <.icon name="hero-user-circle" class="w-5 h-5" />
+                    <span><%= @current_user.fullname %></span>
+                </h1>
+                <a href={~p"/auth/logout"} class="font-semibold text-error">Logout</a>
+            <% else %>
+                <a href={~p"/auth/register"} class="btn btn-sm btn-ghost">Register</a>
+                <a href={~p"/auth/login"} class="btn btn-sm btn-accent-content">Log In</a>
+            <% end %>
+        </div>
+    </header>
+    <div class="border-x border-slate-200 px-6">
+        <.flash_group flash={@flash} />
+        <%= @inner_content %>
     </div>
-    <div class="flex items-center gap-4 font-semibold leading-6 text-zinc-900">
-      <a href="https://twitter.com/elixirphoenix" class="hover:text-zinc-700">
-        @elixirphoenix
-      </a>
-      <a href="https://github.com/phoenixframework/phoenix" class="hover:text-zinc-700">
-        GitHub
-      </a>
-      <a
-        href="https://hexdocs.pm/phoenix/overview.html"
-        class="rounded-lg bg-zinc-100 px-2 py-1 hover:bg-zinc-200/80"
-      >
-        Get Started <span aria-hidden="true">&rarr;</span>
-      </a>
-    </div>
-  </div>
-</header>
-<main class="px-4 py-20 sm:px-6 lg:px-8">
-  <div class="mx-auto max-w-2xl">
-    <.flash_group flash={@flash} />
-    <%= @inner_content %>
-  </div>
 </main>

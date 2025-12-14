@@ -21,14 +21,15 @@ A queue has a human-friendly name for easy identification and a description that
 
 | Number | Code          | Description                                                                 | Status      | Developer | Remarks |
 |--------|---------------|-----------------------------------------------------------------------------|-------------|-----------|---------|
-| 1      | USR-REG       | Users must register to use the system.                                     | Completed   | Naufal          |         |
-| 2      | OWN-CRUD      | Owners can manage (create, read, update, delete) queues.                   | Completed   |Erdine         |         |
-| 3      | OWN-ASSIGN    | Owners can assign Tellers to queues via invitations.                       | Pending     |  Alejandro        |         |
-| 4      | OWN-RESET     | Owners can reset queue numbers back to zero.                               | Pending     |    Affan       |         |
+| 1      | USR-REG       | Users must register to use the system.                                     | Completed   | Naufal, Ariya          |         |
+| 2      | OWN-CRUD      | Owners can manage (create, read, update, delete) queues.                   | Completed   |Erdine, Ariya         |         |
+| 3      | OWN-ASSIGN    | Owners can assign Tellers to queues via invitations.                       | Completed     |  Alejandro        |         |
+| 4      | OWN-RESET     | Owners can reset queue numbers back to zero.                               | Completed     |    Affan       |         |
 | 5      | OWN-INCREMENT | Owners can increment queue numbers.                                        | Pending     | Kenneth          |         |
 | 6      | TEL-INCREMENT | Tellers can increment queue numbers assigned to them.                      | Pending     |     Wahyu      |         |
-| 7      | CLI-REGISTER  | Clients can register for a queue using a barcode scan or queue ID.         | Pending     |     Ale      |         |
+| 7      | CLI-REGISTER  | Clients can register for a queue using a barcode scan or queue ID.         | Completed    |     Defis,Putra |         |
 | 8      | CLI-OAUTH     | Clients can authenticate via OAuth during registration.                    | Pending     |     Wahyu      |         |
+<<<<<<< HEAD
 <<<<<<< HEAD
 | 9      | CLI-DATA      | Clients must provide their email, phone number, and full name during registration. | Pending     |  Bryan         |         |
 | 10     | CLI-TOKEN     | Clients receive queue numbers and tokens (QR/barcode) after registration.  | Pending     |  Ariya         |         |
@@ -45,6 +46,15 @@ A queue has a human-friendly name for easy identification and a description that
 | 14     | Q-MULTI-TELL  | A queue can have multiple Tellers assigned.                                | Pending     |   Putra        |         |
 >>>>>>> 2dc8ba1460d2af0fcb8d06796d43978ee521a693
 | 15     | Q-MULTI-CLI   | A queue can have multiple Clients registered.                              | Pending     |           |         |
+=======
+| 9      | CLI-DATA      | Clients must provide their email, phone number, and full name during registration. | Completed     | Bryan      |         |
+| 10     | CLI-TOKEN     | Clients receive queue numbers and tokens (QR/barcode) after registration.  | Completed     |  Bryan         |         |
+| 11     | Q-MANAGE      | Queues must have a name and description.                                   | Completed     |  Ariya         |         |
+| 12     | Q-STATUS      | Queues must have two statuses: Active and Inactive.                        | Completed    |   Ariya        |         |
+| 13     | Q-PREFIX      | Queue numbers must start with a prefix (e.g., C90, XY456).                 | Completed     | Ariya    |         |
+| 14     | Q-MULTI-TELL  | A queue can have multiple Tellers assigned.                                | Completed     |     Astria      |         |
+| 15     | Q-MULTI-CLI   | A queue can have multiple Clients registered.                              | Completed   |     Bryan      |         |
+>>>>>>> a92d43e6e7cc7d1ac62ab9a090229fea412de603
 
 ### States of the Status Column
 

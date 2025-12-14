@@ -16,26 +16,26 @@
 
     <div class="bg-white rounded-xl shadow-lg p-6">
       <h2 class="text-2xl font-semibold text-gray-900">Kelola Antrian</h2>
-      <p class="text-gray-600 mt-2">Atur (create, read, update, delete) antrian yang kamu miliki.</p>
+      <p class="text-gray-600 mt-2">Buat antrian baru atau lihat daftar antrianmu.</p>
       <div class="mt-4">
         <.link
-          href="#"
+          href={~p"/queues"}
           class="inline-block bg-blue-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-700"
         >
-          Mulai
+          Lihat Antrian
         </.link>
       </div>
     </div>
 
     <div class="bg-white rounded-xl shadow-lg p-6">
       <h2 class="text-2xl font-semibold text-gray-900">Undang Teller</h2>
-      <p class="text-gray-600 mt-2">Kirim undangan ke Teller untuk bergabung ke antrianmu.</p>
+      <p class="text-gray-600 mt-2">Pilih antrian dan undang temanmu menjadi Teller.</p>
       <div class="mt-4">
         <.link
-          href="#"
-          class="inline-block bg-blue-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-700"
+          href={~p"/queues"}
+          class="inline-block bg-green-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-green-700"
         >
-          Undang
+          Mulai Mengundang
         </.link>
       </div>
     </div>
@@ -45,7 +45,7 @@
       <p class="text-gray-600 mt-2">Reset atau naikkan nomor antrian dengan mudah.</p>
       <div class="mt-4">
         <.link
-          href="#"
+          href={~p"/queues"}
           class="inline-block bg-gray-200 text-gray-800 font-bold py-2 px-4 rounded-lg hover:bg-gray-300"
         >
           Atur

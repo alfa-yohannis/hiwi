@@ -70,5 +70,8 @@ module.exports = {
         }
       }, {values})
     })
-  ]
+  ],
+  daisyui: {
+    themes: [],
+  },
 }

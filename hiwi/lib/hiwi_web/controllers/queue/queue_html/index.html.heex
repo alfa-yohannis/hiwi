@@ -1,0 +1,108 @@
+<main class="mx-auto max-w-5xl py-12">
+  <div class="flex flex-col gap-3 overflow-x-auto">
+    
+    <%= if @current_user && @current_user.role == :owner do %>
+      <a 
+        href={~p"/queues/new"} 
+        class="w-fit btn btn-sm btn-neutral"
+      >
+        <.icon name="hero-plus" class="w-5 h-5" />
+        Create Queue
+      </a>
+    <% else %>
+      <h1 class="font-semibold">Available Queue List</h1>
+    <% end %>
+
+    <table class="table w-full">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Prefix</th>
+          <th>Description</th>
+          <th>Max Number</th>
+          <th>Status</th>
+          <th class="w-64">Actions & Invite</th>
+        </tr>
+      </thead>
+      <tbody>
+        <%= if Enum.empty?(@queues) do %>
+          <tr>
+            <td colspan="6" class="text-center text-gray-500 py-4">
+              <%= if @current_user && @current_user.role == :owner do %>
+                You haven't created any queues yet.
+              <% else %>
+                No queues available.
+              <% end %>
+            </td>
+          </tr>
+        <% else %>
+          <%= for queue <- @queues do %>
+            <tr class="align-top">
+              <td><%= queue.name %></td>
+              <td><%= queue.prefix %></td>
+              <td><%= queue.description || "-" %></td>
+              <td><%= queue.max_number %></td>
+              <td>
+                <span class={if queue.status == :active, do: "badge badge-sm badge-success text-white", else: "badge badge-sm badge-error text-white"}>
+                  <%= Phoenix.Naming.humanize(queue.status) %>
+                </span>
+              </td>
+              
+              <td>                
+                <%= if is_nil(@current_user) do %>
+                  <.link
+                    navigate={~p"/queues/join/#{queue.id}"}
+                    class="text-xs font-semibold btn btn-xs btn-primary"
+                  >
+                    Join Queue
+                  </.link>
+                <% else %>
+                  <div class="flex flex-col gap-3">
+                    
+                    <div class="flex gap-3">
+                      <.link
+                        navigate={~p"/queues/edit/#{queue.id}"}
+                        class="text-xs text-warning font-semibold hover:underline"
+                      >
+                        Edit
+                      </.link>
+                      <.link
+                        href={~p"/queues/delete/#{queue.id}"}
+                        method="delete"
+                        data-confirm="Delete this queue?"
+                        class="text-xs text-error font-semibold hover:underline"
+                      >
+                        Delete
+                      </.link>
+                    </div>
+
+                    <div class="p-2 bg-gray-50 rounded border border-gray-200">
+                      <p class="text-[10px] font-bold text-gray-500 mb-1">INVITE TELLER:</p>
+                      
+                      <.form :let={f} for={%{}} action={~p"/invitations/create"} method="post" class="flex flex-col gap-2">
+                        <input type="hidden" name="queue_id" value={queue.id} />
+                        
+                        <input 
+                          type="email" 
+                          name="email" 
+                          placeholder="User Email..." 
+                          required 
+                          class="input input-xs input-bordered w-full bg-white" 
+                        />
+                        
+                        <button type="submit" class="btn btn-xs btn-neutral w-full">
+                          Send Invite
+                        </button>
+                      </.form>
+                    </div>
+
+                  </div>
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</main>

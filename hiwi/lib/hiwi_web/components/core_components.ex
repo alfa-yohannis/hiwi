@@ -16,6 +16,11 @@ defmodule HiwiWeb.CoreComponents do
   """
   use Phoenix.Component
 
+  use Phoenix.VerifiedRoutes,
+    endpoint: HiwiWeb.Endpoint,
+    router: HiwiWeb.Router,
+    statics: HiwiWeb.static_paths()
+
   alias Phoenix.LiveView.JS
   import HiwiWeb.Gettext
 
@@ -329,13 +334,21 @@ defmodule HiwiWeb.CoreComponents do
   end
 
   def input(%{type: "select"} = assigns) do
+    assigns =
+      assigns
+      |> assign_new(:class, fn -> nil end)
+      |> assign_new(:error_class, fn -> nil end)
+
     ~H"""
-    <div>
+    <div class="fieldset mb-2">
       <.label for={@id}><%= @label %></.label>
       <select
         id={@id}
         name={@name}
-        class="mt-2 block w-full rounded-md border border-gray-300 bg-white shadow-sm focus:border-zinc-400 focus:ring-0 sm:text-sm"
+        class={[
+          "mt-2 p-2 block w-full rounded-lg text-zinc-900 focus:ring-0 sm:text-sm sm:leading-6",
+          @errors != [] && (@error_class || "select-error")
+        ]}
         multiple={@multiple}
         {@rest}
       >
@@ -355,7 +368,7 @@ defmodule HiwiWeb.CoreComponents do
         id={@id}
         name={@name}
         class={[
-          "mt-2 block w-full rounded-lg text-zinc-900 focus:ring-0 sm:text-sm sm:leading-6 min-h-[6rem]",
+          "p-2 block w-full rounded-lg text-zinc-900 focus:ring-0 sm:text-sm sm:leading-6 min-h-[6rem]",
           @errors == [] && "border-zinc-300 focus:border-zinc-400",
           @errors != [] && "border-rose-400 focus:border-rose-400"
         ]}
@@ -385,6 +398,58 @@ defmodule HiwiWeb.CoreComponents do
       />
       <.error :for={msg <- @errors}><%= msg %></.error>
     </div>
+    """
+  end
+
+  @doc """
+  Component Select User
+  """
+  attr :name, :string, required: true
+  attr :users, :list, required: true
+  attr :class, :string, default: nil
+
+  def select_users(assigns) do
+    ~H"""
+    <select
+      name={@name}
+      class={@class || "w-full border rounded-lg p-2 text-gray-700"}
+    >
+      <%= for user <- @users do %>
+        <option value={user.id}>
+          <%= user.fullname %> (<%= user.email %>)
+        </option>
+      <% end %>
+    </select>
+    """
+  end
+
+  @doc """
+  Component Teller List
+  """
+  attr :tellers, :list, required: true
+  attr :queue_id, :any, required: true
+  attr :class, :string, default: nil
+
+  def queue_teller_list(assigns) do
+    ~H"""
+      <ul class="space-y-3">
+        <%= for teller <- @tellers do %>
+          <li class="flex justify-between items-center bg-gray-100 p-3 rounded-lg">
+            <span class="px-2"><%= teller.fullname %> – <%= teller.email %></span>
+
+            <.form
+              for={%{}}
+              action={~p"/queues/#{@queue_id}/remove_teller/#{teller.id}"}
+              method="delete"
+              class="inline"
+            >
+              <button class="text-red-600 hover:underline px-2">
+                Remove
+              </button>
+            </.form>
+          </li>
+        <% end %>
+      </ul>
     """
   end
 

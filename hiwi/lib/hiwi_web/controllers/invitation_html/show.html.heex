@@ -1,0 +1,27 @@
+<div class="max-w-md mx-auto mt-10 p-6 bg-white rounded-lg shadow-md border border-gray-200">
+  <div class="text-center">
+    <h1 class="text-2xl font-bold text-gray-800 mb-2">Undangan Teller</h1>
+    
+    <p class="text-gray-600 mb-6">
+      Anda telah diundang oleh <strong><%= @invitation.owner.email %></strong> 
+      untuk menjadi Teller di antrian:
+    </p>
+
+    <div class="bg-gray-100 p-4 rounded-md mb-8">
+      <h2 class="text-xl font-bold text-blue-600"><%= @invitation.queue.name %></h2>
+      <p class="text-sm text-gray-500"><%= @invitation.queue.description %></p>
+    </div>
+
+    <div class="flex justify-center gap-4">
+      <.link href={~p"/invitations/respond?token=#{@token}&decision=accepted"} method="post" 
+        class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-6 rounded transition duration-200">
+        Terima
+      </.link>
+      
+      <.link href={~p"/invitations/respond?token=#{@token}&decision=declined"} method="post" 
+        class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-6 rounded transition duration-200">
+        Tolak
+      </.link>
+    </div>
+  </div>
+</div>
