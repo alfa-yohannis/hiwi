@@ -39,8 +39,6 @@ A queue has a human-friendly name for easy identification and a description that
 | 16    | TEL - USER  | A user can be a teller invited via email.                                     | Completed   |     Naufal, Affan, Erdine     |         |
 | 17    | VIEW  | A client/user can view the queue number prefix                                      | Completed   |     Naufal, Affan, Erdine     |         |
 
->>>>>>> a92d43e6e7cc7d1ac62ab9a090229fea412de603
-
 ### States of the Status Column
 
 The **Status** column indicates the progress of each requirement. The possible states are:
