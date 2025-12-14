@@ -1,0 +1,57 @@
+<div class="p-8 bg-gray-100 min-h-screen">
+  <div class="text-center mb-10">
+    <h1 class="text-4xl font-bold text-gray-800">
+      <%= if assigns[:current_scope] && @current_scope.user do %>
+        Selamat Datang, <%= @current_scope.user.email %>!
+      <% else %>
+        Selamat Datang di Aplikasi Antrian!
+      <% end %>
+    </h1>
+    <p class="text-lg text-gray-600 mt-2">
+      Ini adalah dashboard Aplikasi Antrian kamu.
+    </p>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+    <div class="bg-white rounded-xl shadow-lg p-6">
+      <h2 class="text-2xl font-semibold text-gray-900">Kelola Antrian</h2>
+      <p class="text-gray-600 mt-2">Buat antrian baru atau lihat daftar antrianmu.</p>
+      <div class="mt-4">
+        <.link
+          href={~p"/queues"}
+          class="inline-block bg-blue-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-700"
+        >
+          Lihat Antrian
+        </.link>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-xl shadow-lg p-6">
+      <h2 class="text-2xl font-semibold text-gray-900">Undang Teller</h2>
+      <p class="text-gray-600 mt-2">Pilih antrian dan undang temanmu menjadi Teller.</p>
+      <div class="mt-4">
+        <.link
+          href={~p"/queues"}
+          class="inline-block bg-green-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-green-700"
+        >
+          Mulai Mengundang
+        </.link>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-xl shadow-lg p-6">
+      <h2 class="text-2xl font-semibold text-gray-900">Pengaturan Antrian</h2>
+      <p class="text-gray-600 mt-2">Reset atau naikkan nomor antrian dengan mudah.</p>
+      <div class="mt-4">
+        <.link
+          href={~p"/queues"}
+          class="inline-block bg-gray-200 text-gray-800 font-bold py-2 px-4 rounded-lg hover:bg-gray-300"
+        >
+          Atur
+        </.link>
+      </div>
+    </div>
+
+  </div>
+</div>

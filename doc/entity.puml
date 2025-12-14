@@ -1,0 +1,61 @@
+@startuml
+entity Customer {
+    * customerId: int
+    --
+    email: String
+    fullName: String
+}
+
+entity Participant {
+    * participantId: int
+    --
+    email: String
+    fullName: String
+}
+
+entity Teller {
+    * tellerId: int
+    --
+    email: String
+    fullName: String
+}
+
+entity Queue {
+    * queueId: int
+    --
+    prefix: String
+    maxNumber: int
+    currentNumber: int
+}
+
+entity QueueManagementSystem {
+    * systemId: int
+}
+
+entity DisplaySystem {
+    * displayId: int
+}
+
+entity WebApp {
+    * webAppId: int
+}
+
+entity MobileApp {
+    * mobileAppId: int
+}
+
+entity EmailSystem {
+    * emailSystemId: int
+}
+
+QueueManagementSystem ||--o{ Customer : "manages"
+QueueManagementSystem ||--o{ Participant : "registers"
+QueueManagementSystem ||--o{ Teller : "controls"
+QueueManagementSystem ||--o{ Queue : "manages"
+Queue ||--o{ Participant : "assigns queue number to"
+QueueManagementSystem ||--o{ DisplaySystem : "updates"
+QueueManagementSystem ||--o{ WebApp : "sends queue number via"
+QueueManagementSystem ||--o{ MobileApp : "sends queue number via"
+QueueManagementSystem ||--o{ EmailSystem : "sends queue number via email"
+
+@enduml

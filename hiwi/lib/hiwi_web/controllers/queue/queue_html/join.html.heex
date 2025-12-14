@@ -1,0 +1,23 @@
+<div class="flex justify-center py-9">
+  <.simple_form class="w-11/12 md:w-1/2 lg:w-1/4" :let={f} for={@changeset} action={~p"/queues/join/#{@queue_id}"}>
+    
+    <.header class="text-center">
+        Join Queue Registration
+    </.header>
+    
+    <.input field={f[:full_name]} type="text" label="Full Name" placeholder="Input Full Name" required />
+    
+    <.input field={f[:phone_number]} type="text" label="Phone Number" placeholder="Input Phone Number" required />
+
+    <.input 
+      field={f[:email]} 
+      type="email" 
+      label="Email" 
+      placeholder="Input Email" 
+    />
+    
+    <:actions>
+      <.button class="w-full">Join Queue</.button>
+    </:actions>
+  </.simple_form>
+</div>

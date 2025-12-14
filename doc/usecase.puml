@@ -1,0 +1,42 @@
+@startuml
+left to right direction
+
+actor Owner as "Owner (Admin)"
+actor Teller as "Teller"
+actor Client as "Client"
+
+usecase "Register in the system" as UC_Register
+
+usecase "Manage Queues" as UC_ManageQueues
+usecase "Reset Queue Number" as UC_ResetQueue
+usecase "Increment Queue Number" as UC_IncrementQueue
+
+usecase "Assign Teller to Queue" as UC_AssignTeller
+usecase "Accept Teller Invitation" as UC_AcceptInvitation
+usecase "Increment Assigned Queue Number" as UC_TellerIncrementQueue
+
+usecase "Register for Queue" as UC_ClientRegister
+usecase "Authenticate using OAuth" as UC_AuthOAuth
+usecase "Receive Queue Token" as UC_ReceiveToken
+
+(Owner) -- UC_Register
+(Client) -- UC_Register
+(Teller) -- UC_Register
+
+(Owner) -- UC_ManageQueues
+(Owner) -- UC_ResetQueue
+(Owner) -- UC_IncrementQueue
+
+(Owner) -- UC_AssignTeller
+(Teller) -- UC_AcceptInvitation
+(Teller) -- UC_TellerIncrementQueue
+
+(Client) -- UC_ClientRegister
+(Client) -- UC_AuthOAuth
+(Client) -- UC_ReceiveToken
+
+UC_ManageQueues .> UC_ResetQueue : "includes"
+UC_ManageQueues .> UC_IncrementQueue : "includes"
+UC_AssignTeller .> UC_AcceptInvitation : "includes"
+
+@enduml

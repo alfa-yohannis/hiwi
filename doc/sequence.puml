@@ -1,0 +1,33 @@
+@startuml
+actor Customer 
+actor Participant
+actor Teller
+participant "Queue Management System" as QMS
+participant "Email System" as Email
+participant "Web App" as Web
+participant "Mobile App" as Mobile
+participant "Display System" as Display
+
+Customer -> QMS: Register in system
+QMS --> Customer: Registration confirmation
+Customer -> QMS: Create queues
+Customer -> QMS: Manage queues
+
+Participant -> QMS: Register for queue
+QMS --> Participant: Registration confirmation
+QMS -> Web: Send queue number
+QMS -> Email: Send queue number
+QMS -> Mobile: Send queue number
+Web --> Participant: Display queue number
+Email --> Participant: Send queue number via email
+Mobile --> Participant: Display queue number
+
+Participant -> QMS: Waiting for turn
+
+Teller -> QMS: Register in system
+QMS --> Teller: Registration confirmation
+Teller -> QMS: Control queue progression
+QMS -> Display: Update queues on screen
+Display --> Teller: Display updated queue
+
+@enduml

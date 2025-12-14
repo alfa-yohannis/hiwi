@@ -1,0 +1,39 @@
+@startuml
+|Customer|
+start
+:Register in system;
+if (Registration successful?) then (Yes)
+    :Create queues;
+    :Manage queues;
+else (No)
+    :Show error;
+endif
+stop
+
+|Participant|
+start
+:Register for queue;
+if (Registration successful?) then (Yes)
+    :Receive queue number via\nweb app, email, and mobile app;
+    :Waiting for the turn;
+else (No)
+    :Show error;
+endif
+stop
+
+|Teller|
+start
+:Register in system;
+if (Registration successful?) then (No)
+    |Teller|
+    :Show error;
+else (Yes)
+    :Control queue progression;
+    |Display|
+    :Update queues on screen;
+endif
+|Teller|
+stop
+
+
+@enduml
