@@ -25,7 +25,7 @@ A queue has a human-friendly name for easy identification and a description that
 | 2      | OWN-CRUD      | Owners can manage (create, read, update, delete) queues.                   | Completed   |Erdine, Ariya         |         |
 | 3      | OWN-ASSIGN    | Owners can assign Tellers to queues via invitations.                       | Completed     |  Alejandro, Naufal, Affan, Erdine       |         |
 | 4      | OWN-RESET     | Owners can reset queue numbers back to zero.                               | Completed     |    Affan       |         |
-| 5      | OWN-INCREMENT | Owners can increment queue numbers.                                        | Completed     | Erdine, Affan, Naufal          |         |
+| 5      | OWN-INCREMENT | Owners can increment queue numbers.                                        | Completed     | Kenneth, Erdine, Affan, Naufal          |         |
 | 6      | TEL-INCREMENT | Tellers can increment queue numbers assigned to them.                      | Completed     |     Wahyu      |         |
 | 7      | CLI-REGISTER  | Clients can register for a queue using a barcode scan or queue ID.         | Completed    |     Defis,Putra |         |
 | 8      | CLI-OAUTH     | Clients can authenticate via OAuth during registration.                    | Completed     |     Wahyu      |         |
