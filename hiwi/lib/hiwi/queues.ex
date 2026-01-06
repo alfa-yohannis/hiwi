@@ -99,34 +99,54 @@ defmodule Hiwi.Queues do
       |> Repo.update()
     end
 
-   def increment_queue_number(%Queue{} = queue) do
-  # ===============================
-  # Updated by: Kenneth
-  # Reason:
-  # - Ensure only ACTIVE queues can be incremented by Owner
-  # - Improve clarity of queue number generation
-  # ===============================
+  @doc """
+  Increment queue number by OWNER.
 
-  if queue.status != "Active" do
-    {:error, :queue_inactive}
-  else
-    # 1. Hitung nomor selanjutnya
-    new_number = queue.current_number + 1
+  Updated by: Kenneth L. Ibrahim
+  - Ensures only ACTIVE queues can be incremented
+  - Keeps prefix-number consistency
+  """
+  def increment_queue_number(%Queue{} = queue) do
+    # ===============================
+    # Updated by: Kenneth
+    # ===============================
 
-    # 2. Ambil prefix huruf saja (contoh: "A10" -> "A")
-    base_prefix = String.replace(queue.prefix, ~r/\d+$/, "")
+    if queue.status not in [:active, "Active"] do
+      {:error, :queue_inactive}
+    else
+      # 1. Hitung nomor selanjutnya
+      new_number = queue.current_number + 1
 
-    # 3. Gabungkan prefix dengan nomor baru (contoh: "A" + "11" -> "A11")
-    new_prefix_str = "#{base_prefix}#{new_number}"
+      # 2. Ambil prefix huruf saja (contoh: "A10" -> "A")
+      base_prefix =
+        queue.prefix
+        |> to_string()
+        |> String.replace(~r/\d+$/, "")
 
-    queue
-    |> Ecto.Changeset.change(%{
-      current_number: new_number,
-      prefix: new_prefix_str
-    })
-    |> Repo.update()
-  end
+      # 3. Gabungkan prefix + nomor baru
+      new_prefix_str = "#{base_prefix}#{new_number}"
+
+      queue
+      |> Ecto.Changeset.change(%{
+        current_number: new_number,
+        prefix: new_prefix_str
+      })
+      |> Repo.update()
+    end
+
     # ----------------------------------------------------
+
+      @doc """
+  Check whether a queue is eligible for increment.
+
+  Added by: Kenneth
+  """
+  def can_increment_queue?(%Queue{status: status, current_number: number})
+      when status in [:active, "Active"] and is_integer(number) and number >= 0 do
+    true
+  end
+
+  def can_increment_queue?(_), do: false
 
     @doc """
     Mengambil semua antrian yang dimiliki oleh user tertentu.
