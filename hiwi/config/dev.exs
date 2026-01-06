@@ -3,7 +3,7 @@ import Config
 # Configure your database
 config :hiwi, Hiwi.Repo,
   username: "postgres",
-  password: "123456",
+  password: "12345",
   hostname: "localhost",
   database: "hiwi_dev",
   stacktrace: true,

@@ -48,6 +48,7 @@ defmodule HiwiWeb.Endpoint do
 
   plug Plug.MethodOverride
   plug Plug.Head
+  plug Ueberauth
   plug Plug.Session, @session_options
   plug HiwiWeb.Router
 end

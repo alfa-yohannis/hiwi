@@ -1,166 +1,177 @@
 defmodule Hiwi.Queues do
-    alias Hiwi.Repo
-    alias Hiwi.Queues.Queue
+  import Ecto.Query, warn: false
 
-    alias Ecto.Changeset
+  alias Hiwi.Repo
+  alias Hiwi.Queues.Queue
+  alias Hiwi.Users.User
 
-    import Ecto.Query, only: [from: 2]
+  # =========================
+  # LIST & GET
+  # =========================
 
-    @doc """
-    Mengembalikan daftar semua antrian, dan memuat owner-nya.
-    """
-    def list_queues do
-        Repo.all(from q in Queue, preload: [:owner])
-    end
+  def list_active_queues do
+    Queue
+    |> where([q], q.status == :active)
+    |> order_by([q], asc: q.id)
+    |> Repo.all()
+    |> Repo.preload([:tellers, :owner])
+  end
 
-    @doc """
-    Mengembalikan daftar semua antrian yang aktif
-    """
-    def list_active_queues do
-        from(q in Queue, where: q.status == :active)
-        |> Repo.all()
-    end
+  def list_queues_by_owner(owner_id) do
+    Queue
+    |> where([q], q.owner_id == ^owner_id)
+    |> order_by([q], asc: q.id)
+    |> Repo.all()
+    |> Repo.preload([:tellers, :owner])
+  end
 
-    @doc """
-    Mengambil antrian berdasarkan ID.
-    """
-    def get_queue!(id) do
-        Repo.get!(Queue, id)
-        |> Repo.preload(:owner)
-    end
+  def get_queue!(id) do
+    Queue
+    |> Repo.get!(id)
+    |> Repo.preload([:tellers, :owner])
+  end
 
-    @doc """
-    Membuat antrian baru.
-    Menerima attrs termasuk owner_id.
-    Mengembalikan {:ok, queue} atau {:error, changeset}.
-    """
-    def create_queue(owner_id, attrs) when is_integer(owner_id) do
-        attrs_atomized =
-        Map.new(attrs, fn
-            {k, v} when is_atom(k) -> {k, v}
-            {k, v} when is_binary(k) -> {String.to_atom(k), v}
-            {k, v} -> {k, v}
-        end)
+  # =========================
+  # CREATE / UPDATE / DELETE
+  # =========================
 
+  def build_new_queue_changeset do
+    Queue.changeset(%Queue{}, %{})
+  end
 
-        attrs_with_owner = Map.put(attrs_atomized, :owner_id, owner_id)
+  def create_queue(owner_id, attrs) do
+    attrs = Map.put(attrs, "owner_id", owner_id)
 
-        %Queue{}
-        |> Queue.changeset(attrs_with_owner)
-        |> Repo.insert()
-    end
+    %Queue{}
+    |> Queue.changeset(attrs)
+    |> Repo.insert()
+  end
 
-    @doc """
-    Memperbarui antrian.
-    """
-    def update_queue(%Queue{} = queue, attrs) do
-        queue
-        |> Queue.changeset(attrs)
-        |> Repo.update()
-    end
+  def build_edit_queue_changeset(%Queue{} = queue) do
+    Queue.changeset(queue, %{})
+  end
 
-    @doc """
-    Menghapus antrian.
-    """
-    def delete_queue(%Queue{} = queue) do
-        Repo.delete(queue)
-    end
+  def update_queue(%Queue{} = queue, attrs) do
+    queue
+    |> Queue.changeset(attrs)
+    |> Repo.update()
+  end
 
-    # --- UTILITY & LOGIC ---
+  def delete_queue(%Queue{} = queue) do
+    Repo.delete(queue)
+  end
 
-    @doc """
-    Mengembalikan changeset antrian baru untuk form.
-    """
-    def build_new_queue_changeset(attrs \\ %{}) do
-        %Queue{}
-        |> Queue.changeset(attrs)
-        # Ini penting agar field current_number = 0 saat form diinisialisasi
-        |> Changeset.put_change(:current_number, 0)
-    end
+  # =========================
+  # ASSIGN / REMOVE TELLER
+  # (dipakai oleh QueueController)
+  # =========================
 
-    def build_edit_queue_changeset(queue, attrs \\ %{}) do
-        Queue.changeset(queue, attrs)
-    end
+  def assign_teller_to_queue(queue_id, user_id) do
+    queue =
+      Queue
+      |> Repo.get!(queue_id)
+      |> Repo.preload(:tellers)
 
-    @doc """
-    Mereset current_number antrian kembali ke 0.
-    """
-    def reset_queue(%Queue{} = queue) do
-        queue
-        |> Changeset.change(%{current_number: 0})
-        |> Repo.update()
-    end
+    user = Repo.get!(User, user_id)
 
-    @doc """
-    Mengambil semua antrian yang dimiliki oleh user tertentu.
-    """
-    def list_queues_by_owner(owner_id) do
-        Repo.all(
-        from q in Queue,
-        where: q.owner_id == ^owner_id,
-        preload: [:owner]
-        )
-    end
-
-    @doc """
-    Menambahkan seorang teller ke antrian tertentu jika belum terdaftar.
-    Jika teller sudah ada di antrian, tidak akan menambahkan duplikat.
-    """
-    def assign_teller_to_queue(queue_id, user_id) do
-        queue =
-            Repo.get!(Queue, queue_id)
-            |> Repo.preload(:tellers)
-
-        user  = Repo.get!(Hiwi.Users.User, user_id)
-
-        tellers =
-            if Enum.any?(queue.tellers, fn t -> t.id == user_id end) do
-                queue.tellers
-            else
-                queue.tellers ++ [user]
-            end
-
+    # kalau user bukan teller, tolak
+    if user.role != :teller do
+      {:error, :not_teller}
+    else
+      # kalau sudah ada, tidak perlu dobel
+      if Enum.any?(queue.tellers, &(&1.id == user.id)) do
+        {:ok, queue}
+      else
         queue
         |> Ecto.Changeset.change()
-        |> Ecto.Changeset.put_assoc(:tellers, tellers)
+        |> Ecto.Changeset.put_assoc(:tellers, [user | queue.tellers])
         |> Repo.update()
+      end
     end
+  end
 
-    @doc """
-    Menghapus seorang teller dari antrian tertentu.
-    """
-    def remove_teller_from_queue(queue_id, user_id) do
-        queue =
-            Repo.get!(Queue, queue_id)
-            |> Repo.preload(:tellers)
+  def remove_teller_from_queue(queue_id, user_id) do
+    queue =
+      Queue
+      |> Repo.get!(queue_id)
+      |> Repo.preload(:tellers)
 
-        updated = Enum.reject(queue.tellers, fn t -> t.id == user_id end)
+    new_tellers = Enum.reject(queue.tellers, &(&1.id == user_id))
 
+    queue
+    |> Ecto.Changeset.change()
+    |> Ecto.Changeset.put_assoc(:tellers, new_tellers)
+    |> Repo.update()
+  end
+
+  # =========================
+  # TEL-INCREMENT (JOB WAHYU)
+  # =========================
+
+  @doc """
+  Teller increment current_number pada queue yang memang ditugaskan ke teller tsb.
+
+  Rules:
+  - Queue harus :active
+  - Teller harus termasuk di queue.tellers
+  - current_number tidak boleh lewat max_number
+  """
+  def increment_queue(queue_id, %User{} = teller) do
+    queue =
+      Queue
+      |> Repo.get!(queue_id)
+      |> Repo.preload(:tellers)
+
+    teller_ids = Enum.map(queue.tellers, & &1.id)
+
+    cond do
+      queue.status != :active ->
+        {:error, :inactive}
+
+      teller.id not in teller_ids ->
+        {:error, :unauthorized}
+
+      queue.current_number >= queue.max_number ->
+        {:error, :max_reached}
+
+      true ->
         queue
-        |> Ecto.Changeset.change()
-        |> Ecto.Changeset.put_assoc(:tellers, updated)
+        |> Ecto.Changeset.change(current_number: queue.current_number + 1)
+        |> Repo.update()
+        
+    end
+  end
+
+    # =========================
+  # OWN-INCREMENT
+  # =========================
+
+  @doc """
+  Owner increment current_number pada queue miliknya sendiri.
+
+  Rules:
+  - Queue harus :active
+  - Owner harus pemilik queue
+  - current_number tidak boleh lewat max_number
+  """
+  def increment_queue_by_owner(queue_id, %User{} = owner) do
+    queue = Repo.get!(Queue, queue_id)
+
+    cond do
+      queue.owner_id != owner.id ->
+        {:error, :unauthorized}
+
+      queue.status != :active ->
+        {:error, :inactive}
+
+      queue.current_number >= queue.max_number ->
+        {:error, :max_reached}
+
+      true ->
+        queue
+        |> Ecto.Changeset.change(current_number: queue.current_number + 1)
         |> Repo.update()
     end
+  end
 
-    @doc """
-    Mengambil daftar semua teller yang terdaftar pada antrian tertentu.
-    """
-    def list_tellers_for_queue(queue_id) do
-        Repo.get!(Queue, queue_id)
-        |> Repo.preload(:tellers)
-        |> Map.get(:tellers)
-    end
-
-    @doc """
-    Memeriksa apakah seorang user sudah menjadi teller pada antrian tertentu.
-    """
-    def teller_assigned_to_queue?(queue_id, user_id) do
-        query =
-        from(qt in "queue_tellers",
-            where: qt.queue_id == ^queue_id and qt.user_id == ^user_id,
-            select: count(qt.user_id)
-        )
-
-        Repo.one(query) > 0
-    end
 end

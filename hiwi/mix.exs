@@ -60,7 +60,10 @@ defmodule Hiwi.MixProject do
       {:jason, "~> 1.2"},
       {:dns_cluster, "~> 0.1.1"},
       {:bandit, "~> 1.5"},
-      {:qr_code, "~> 3.2.0"}
+      {:qr_code, "~> 3.2.0"},
+      # === OAUTH GOOGLE (CLI-OAUTH) ===
+      {:ueberauth, "~> 0.10"},
+      {:ueberauth_google, "~> 0.10"}
     ]
   end
 

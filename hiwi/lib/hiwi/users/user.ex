@@ -2,13 +2,16 @@ defmodule Hiwi.Users.User do
     use Ecto.Schema
     import Ecto.Changeset
 
-    @roles [:owner, :teller]
+    # 1. PERBAIKAN: Tambahkan :client ke daftar role yang valid
+    @roles [:owner, :teller, :client]
 
     schema "users" do
         field :fullname, :string
         field :email, :string
         field :hashed_password, :string
-        field :role, Ecto.Enum, values: @roles
+        
+        # 2. PERBAIKAN: Tambahkan nilai default :client
+        field :role, Ecto.Enum, values: @roles, default: :client
 
         field :password, :string, virtual: true, redact: true
 
@@ -27,7 +30,8 @@ defmodule Hiwi.Users.User do
         |> cast(attrs, [:fullname, :email, :password])
         |> validate_required([:fullname, :email, :password])
 
-        |> put_change(:role, :owner)
+        # Baris yang dihapus/diberi komentar:
+        # |> put_change(:role, :owner) 
 
         |> validate_format(:email, ~r/@/)
         |> validate_length(:password, min: 6)
@@ -41,6 +45,14 @@ defmodule Hiwi.Users.User do
         user
         |> cast(attrs, [:email, :password])
         |> validate_required([:email, :password])
+    end
+
+    # --- FUNGSI CHANGESET BARU UNTUK UPDATE ROLE ---
+    # FUNGSI INI HARUS DI SINI, DI LUAR FUNGSI LAIN
+    def role_changeset(user, attrs) do
+        user
+        |> cast(attrs, [:role])
+        |> validate_required([:role]) 
     end
 
     defp put_password_hash(changeset) do

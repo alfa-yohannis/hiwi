@@ -1,201 +1,292 @@
 defmodule HiwiWeb.Queue.QueueController do
-    use HiwiWeb, :controller
+  use HiwiWeb, :controller
 
-    alias Hiwi.Queues
-    alias Hiwi.QueueEntries
-    alias Hiwi.Repo
-    alias Hiwi.Users
+  alias Hiwi.Queues
+  alias Hiwi.QueueEntries
+  alias Hiwi.Repo
+  alias Hiwi.Users
+  alias Hiwi.Invitations
 
-    plug(
-        HiwiWeb.Plugs.RequireAuth
-        when action in [:show_registration_page, :show_edit_page, :register, :edit, :delete, :assign_teller, :remove_teller]
-    )
+  plug(
+    HiwiWeb.Plugs.RequireAuth
+    when action in [
+           :show_registration_page,
+           :show_edit_page,
+           :register,
+           :edit,
+           :delete,
+           :assign_teller,
+           :remove_teller,
+           :increment,
+           :increment_by_owner
+         ]
+  )
 
-    # Owner-only checks for modifying the queue include assign/remove here
-    plug(:check_queue_owner when action in [:edit, :delete, :assign_teller, :remove_teller])
+  # Owner-only checks for modifying the queue include assign/remove here
+  plug(:check_queue_owner when action in [:edit, :delete, :assign_teller, :remove_teller])
 
-    def index(conn, _params) do
-        current_user = conn.assigns[:current_user]
+  def index(conn, _params) do
+    current_user = conn.assigns[:current_user]
 
-        queues =
-        case current_user do
-            %Hiwi.Users.User{} = user when user.role == :owner ->
-                Queues.list_queues_by_owner(user.id)
+    queues =
+      case current_user do
+        %Hiwi.Users.User{} = user when user.role == :owner ->
+          Queues.list_queues_by_owner(user.id)
 
-            _ ->
-            Queues.list_active_queues()
-        end
+        _ ->
+          Queues.list_active_queues()
+      end
 
-        render(conn, :index, queues: queues)
-    end
+    invitations =
+      if current_user do
+        Invitations.list_pending_invitations_for_user(current_user)
+      else
+        []
+      end
 
-    def show_registration_page(conn, _params) do
-        changeset = Queues.build_new_queue_changeset()
-        render(conn, :register, changeset: changeset)
-    end
+    render(conn, :index, queues: queues, invitations: invitations)
+  end
 
-    def register(conn, %{"queue" => queue_params}) do
-        owner_id = conn.assigns[:current_user].id
+  def show_registration_page(conn, _params) do
+    changeset = Queues.build_new_queue_changeset()
+    render(conn, :register, changeset: changeset)
+  end
 
-        case Queues.create_queue(owner_id, queue_params) do
-            {:ok, _queue} ->
-                conn
-                |> put_flash(:info, "Queue created successfully.")
-                |> redirect(to: ~p"/queues")
+  def register(conn, %{"queue" => queue_params}) do
+    owner_id = conn.assigns[:current_user].id
 
-            {:error, changeset} ->
-                conn
-                |> put_flash(:error, "Failed to create the Queue. Please check the form and fix the errors.")
-                |> render(:register, changeset: changeset)
-        end
-    end
-
-    def show_edit_page(conn, %{"id" => queue_id}) do
-        queue =
-            queue_id
-            |> Queues.get_queue!()
-            |> Repo.preload([:tellers, :owner]) # biar list teller kebaca
-
-        # hanya owner yang boleh assign teller
-        current_user = conn.assigns[:current_user]
-
-        available_users =
-            case current_user do
-                %Hiwi.Users.User{role: :owner} ->
-                Users.list_tellers_not_assigned_to(queue.id)
-
-                _ ->
-                []
-            end
-
-        changeset = Queues.build_edit_queue_changeset(queue)
-
+    case Queues.create_queue(owner_id, queue_params) do
+      {:ok, _queue} ->
         conn
-        |> assign(:queue, queue)
+        |> put_flash(:info, "Queue created successfully.")
+        |> redirect(to: ~p"/queues")
+
+      {:error, changeset} ->
+        conn
+        |> put_flash(:error, "Failed to create the Queue. Please check the form and fix the errors.")
+        |> render(:register, changeset: changeset)
+    end
+  end
+
+  def show_edit_page(conn, %{"id" => queue_id}) do
+    queue =
+      queue_id
+      |> Queues.get_queue!()
+      |> Repo.preload([:tellers, :owner]) # biar list teller kebaca
+
+    current_user = conn.assigns[:current_user]
+
+    available_users =
+      case current_user do
+        %Hiwi.Users.User{role: :owner} ->
+          Users.list_tellers_not_assigned_to(queue.id)
+
+        _ ->
+          []
+      end
+
+    changeset = Queues.build_edit_queue_changeset(queue)
+
+    conn
+    |> assign(:queue, queue)
+    |> assign(:changeset, changeset)
+    |> assign(:available_users, available_users)
+    |> render(:edit)
+  end
+
+  def edit(conn, %{"id" => queue_id, "queue" => queue_params}) do
+    old_queue = Queues.get_queue!(queue_id)
+
+    case Queues.update_queue(old_queue, queue_params) do
+      {:ok, _queue} ->
+        conn
+        |> put_flash(:info, "Queue updated successfully.")
+        |> redirect(to: "/queues")
+
+      {:error, changeset} ->
+        conn
+        |> assign(:queue, old_queue |> Repo.preload([:tellers, :owner]))
         |> assign(:changeset, changeset)
-        |> assign(:available_users, available_users)
+        |> assign(:available_users, [])
         |> render(:edit)
     end
+  end
 
-    def edit(conn, %{"id" => queue_id, "queue" => queue_params}) do
-        old_queue = Queues.get_queue!(queue_id)
-        case Queues.update_queue(old_queue, queue_params) do
-            {:ok, _queue} ->
-                conn
-                |> put_flash(:info, "Queue updated successfully.")
-                |> redirect(to: "/queues")
+  def delete(conn, %{"id" => queue_id}) do
+    queue = Queues.get_queue!(queue_id)
+    Queues.delete_queue(queue)
 
-            {:error, changeset} ->
-                # render :edit and pass required assigns so template doesn't crash
-                conn
-                |> assign(:queue, old_queue |> Repo.preload([:tellers, :owner]))
-                |> assign(:changeset, changeset)
-                |> assign(:available_users, []) # owner logic will produce actual list in show_edit_page
-                |> render(:edit)
+    conn
+    |> put_flash(:info, "Queue deleted successfully.")
+    |> redirect(to: "/queues")
+  end
+
+  @doc """
+  Plug untuk memastikan hanya owner antrian yang bisa mengakses action tertentu (edit, delete, assign/remove teller).
+  """
+  def check_queue_owner(conn, _params) do
+    %{params: %{"id" => queue_id}} = conn
+
+    case Queues.get_queue!(queue_id) do
+      %Hiwi.Queues.Queue{owner_id: owner_id} = _queue ->
+        if owner_id == conn.assigns.current_user.id do
+          conn
+        else
+          conn
+          |> put_flash(:error, "You don't have permission to access this queue.")
+          |> redirect(to: "/queues/edit/#{queue_id}")
+          |> halt()
         end
-    end
 
-    def delete(conn, %{"id" => queue_id}) do
-        queue = Queues.get_queue!(queue_id)
-        Queues.delete_queue(queue)
-
+      nil ->
         conn
-        |> put_flash(:info, "Queue deleted successfully.")
+        |> put_flash(:error, "Queue not found.")
         |> redirect(to: "/queues")
+        |> halt()
     end
+  end
 
-    @doc """
-    Plug untuk memastikan hanya owner antrian yang bisa mengakses action tertentu (edit, delete, assign/remove teller).
-    """
-    def check_queue_owner(conn, _params) do
-        %{params: %{"id" => queue_id}} = conn
+  @doc """
+  Menampilkan halaman join queue untuk user.
+  """
+  def show_join_queue_page(conn, %{"id" => queue_id}) do
+    changeset = QueueEntries.build_new_queue_entry_changeset()
+    render(conn, :join, changeset: changeset, queue_id: queue_id)
+  end
 
-        case Queues.get_queue!(queue_id) do
-            %Hiwi.Queues.Queue{owner_id: owner_id} = _queue ->
-                if owner_id == conn.assigns.current_user.id do
-                    conn
-                else
-                    conn
-                    |> put_flash(:error, "You don't have permission to access this queue.")
-                    |> redirect(to: "/queues/edit/#{queue_id}")
-                    |> halt()
-                end
+  @doc """
+  User join antrian tertentu.
+  """
+  def join(conn, %{"id" => queue_id, "queue_entry" => queue_entry}) do
+    case QueueEntries.create_queue_entry(queue_entry, queue_id) do
+      {:ok, queue_entry} ->
+        conn
+        |> put_flash(:info, "Queue has been joined successfully.")
+        |> redirect(to: ~p"/queues/entry/#{queue_entry.id}")
 
-            nil ->
-                conn
-                |> put_flash(:error, "Queue not found.")
-                |> redirect(to: "/queues")
-                |> halt()
-        end
+      {:error, %Ecto.Changeset{} = changeset} ->
+        conn
+        |> render(:join, changeset: changeset, queue_id: queue_id)
     end
+  end
 
-    @doc """
-    Menampilkan halaman join queue untuk user.
-    """
-    def show_join_queue_page(conn, %{"id" => queue_id}) do
-        changeset = QueueEntries.build_new_queue_entry_changeset()
-        render(conn, :join, changeset: changeset, queue_id: queue_id)
+  @doc """
+  Menampilkan halaman detail entry antrian tertentu.
+  """
+  def show_queue_entry_page(conn, %{"id" => entry_id}) do
+    queue_entry = QueueEntries.get_queue_entry!(entry_id)
+    render(conn, :entry, queue_entry: queue_entry)
+  end
+
+  @doc """
+  Menambahkan teller ke antrian tertentu.
+  """
+  def assign_teller(conn, %{"id" => queue_id, "user_id" => user_id_str}) do
+    with {queue_id_i, ""} <- Integer.parse(to_string(queue_id)),
+         {user_id_i, ""} <- Integer.parse(to_string(user_id_str)),
+         {:ok, _} <- Queues.assign_teller_to_queue(queue_id_i, user_id_i) do
+      conn
+      |> put_flash(:info, "Teller added successfully.")
+      |> redirect(to: "/queues/edit/#{queue_id}")
+    else
+      {:error, :not_teller} ->
+        conn
+        |> put_flash(:error, "Selected user is not a teller.")
+        |> redirect(to: "/queues/edit/#{queue_id}")
+
+      _ ->
+        conn
+        |> put_flash(:error, "Failed to add teller.")
+        |> redirect(to: "/queues/edit/#{queue_id}")
     end
+  end
 
-    @doc """
-    User join antrian tertentu.
-    """
-    def join(conn, %{"id" => queue_id, "queue_entry" => queue_entry}) do
-        case QueueEntries.create_queue_entry(queue_entry, queue_id) do
-            {:ok, queue_entry} ->
-                conn
-                |> put_flash(:info, "Queue has been joined successfully.")
-                |> redirect(to: ~p"/queues/entry/#{queue_entry.id}")
-
-            {:error, %Ecto.Changeset{} = changeset} ->
-                conn
-                |> render(:join, changeset: changeset, queue_id: queue_id)
-        end
+  @doc """
+  Menghapus teller dari antrian tertentu.
+  """
+  def remove_teller(conn, %{"id" => queue_id, "user_id" => user_id_str}) do
+    with {queue_id_i, ""} <- Integer.parse(to_string(queue_id)),
+         {user_id_i, ""} <- Integer.parse(to_string(user_id_str)),
+         {:ok, _} <- Queues.remove_teller_from_queue(queue_id_i, user_id_i) do
+      conn
+      |> put_flash(:info, "Teller removed.")
+      |> redirect(to: "/queues/edit/#{queue_id}")
+    else
+      _ ->
+        conn
+        |> put_flash(:error, "Failed to remove teller.")
+        |> redirect(to: "/queues/edit/#{queue_id}")
     end
+  end
 
-    @doc """
-    Menampilkan halaman detail entry antrian tertentu.
-    """
-    def show_queue_entry_page(conn, %{"id" => entry_id}) do
-        queue_entry = QueueEntries.get_queue_entry!(entry_id)
-        render(conn, :entry, queue_entry: queue_entry)
+  # =========================
+  # TEL-INCREMENT (JOB WAHYU)
+  # =========================
+  def increment(conn, %{"id" => queue_id}) do
+    current_user = conn.assigns.current_user
+
+    if current_user.role != :teller do
+      conn
+      |> put_flash(:error, "Only tellers can increment queue numbers.")
+      |> redirect(to: "/queues")
+    else
+      case Queues.increment_queue(queue_id, current_user) do
+        {:ok, _queue} ->
+          conn
+          |> put_flash(:info, "Queue number incremented.")
+          |> redirect(to: "/queues")
+
+        {:error, :inactive} ->
+          conn
+          |> put_flash(:error, "Queue is inactive.")
+          |> redirect(to: "/queues")
+
+        {:error, :unauthorized} ->
+          conn
+          |> put_flash(:error, "You are not assigned to this queue.")
+          |> redirect(to: "/queues")
+
+        {:error, :max_reached} ->
+          conn
+          |> put_flash(:error, "Queue has reached maximum number.")
+          |> redirect(to: "/queues")
+      end
     end
+  end
 
-    @doc """
-    Menambahkan teller ke antrian tertentu.
-    """
-    def assign_teller(conn, %{"id" => queue_id, "user_id" => user_id_str}) do
-        with {queue_id_i, ""} <- Integer.parse(to_string(queue_id)),
-            {user_id_i, ""} <- Integer.parse(to_string(user_id_str)),
-            {:ok, _} <- Queues.assign_teller_to_queue(queue_id_i, user_id_i) do
+    # =========================
+  # OWN-INCREMENT
+  # =========================
+  def increment_by_owner(conn, %{"id" => queue_id}) do
+    current_user = conn.assigns.current_user
 
-            conn
-            |> put_flash(:info, "Teller added successfully.")
-            |> redirect(to: "/queues/edit/#{queue_id}")
-        else
-            _ ->
-                conn
-                |> put_flash(:error, "Failed to add teller.")
-                |> redirect(to: "/queues/edit/#{queue_id}")
-        end
+    if current_user.role != :owner do
+      conn
+      |> put_flash(:error, "Only owners can increment queue numbers.")
+      |> redirect(to: "/queues")
+    else
+      case Queues.increment_queue_by_owner(queue_id, current_user) do
+        {:ok, _queue} ->
+          conn
+          |> put_flash(:info, "Queue number incremented.")
+          |> redirect(to: "/queues")
+
+        {:error, :inactive} ->
+          conn
+          |> put_flash(:error, "Queue is inactive.")
+          |> redirect(to: "/queues")
+
+        {:error, :unauthorized} ->
+          conn
+          |> put_flash(:error, "You are not the owner of this queue.")
+          |> redirect(to: "/queues")
+
+        {:error, :max_reached} ->
+          conn
+          |> put_flash(:error, "Queue has reached maximum number.")
+          |> redirect(to: "/queues")
+      end
     end
+  end
 
-    @doc """
-    Menghapus teller dari antrian tertentu.
-    """
-    def remove_teller(conn, %{"id" => queue_id, "user_id" => user_id_str}) do
-        with {queue_id_i, ""} <- Integer.parse(to_string(queue_id)),
-            {user_id_i, ""} <- Integer.parse(to_string(user_id_str)),
-            {:ok, _} <- Queues.remove_teller_from_queue(queue_id_i, user_id_i) do
-
-                conn
-            |> put_flash(:info, "Teller removed.")
-            |> redirect(to: "/queues/edit/#{queue_id}")
-        else
-            _ ->
-                conn
-                |> put_flash(:error, "Failed to remove teller.")
-                |> redirect(to: "/queues/edit/#{queue_id}")
-        end
-    end
 end

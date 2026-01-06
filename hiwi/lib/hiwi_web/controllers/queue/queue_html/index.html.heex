@@ -1,9 +1,10 @@
 <main class="mx-auto max-w-5xl py-12">
   <div class="flex flex-col gap-3 overflow-x-auto">
-    
+
+    <!-- HEADER -->
     <%= if @current_user && @current_user.role == :owner do %>
-      <a 
-        href={~p"/queues/new"} 
+      <a
+        href={~p"/queues/new"}
         class="w-fit btn btn-sm btn-neutral"
       >
         <.icon name="hero-plus" class="w-5 h-5" />
@@ -13,6 +14,35 @@
       <h1 class="font-semibold">Available Queue List</h1>
     <% end %>
 
+    <!-- INVITATION ALERT -->
+    <%= if @current_user && Enum.any?(@invitations) do %>
+      <div class="alert alert-info shadow-lg mb-4">
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg"
+               fill="none"
+               viewBox="0 0 24 24"
+               class="stroke-current flex-shrink-0 w-6 h-6">
+            <path stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+
+          <% token = Enum.at(@invitations, 0).token %>
+          <span>
+            Anda memiliki <%= Enum.count(@invitations) %> undangan Teller.
+          </span>
+          <a
+            href={~p"/invitations/show?token=#{token}"}
+            class="font-bold underline ml-2"
+          >
+            Lihat Sekarang
+          </a>
+        </div>
+      </div>
+    <% end %>
+
+    <!-- TABLE -->
     <table class="table w-full">
       <thead>
         <tr>
@@ -21,9 +51,10 @@
           <th>Description</th>
           <th>Max Number</th>
           <th>Status</th>
-          <th class="w-64">Actions & Invite</th>
+          <th class="w-64">Actions</th>
         </tr>
       </thead>
+
       <tbody>
         <%= if Enum.empty?(@queues) do %>
           <tr>
@@ -36,71 +67,72 @@
             </td>
           </tr>
         <% else %>
+
           <%= for queue <- @queues do %>
             <tr class="align-top">
               <td><%= queue.name %></td>
               <td><%= queue.prefix %></td>
               <td><%= queue.description || "-" %></td>
               <td><%= queue.max_number %></td>
+
               <td>
-                <span class={if queue.status == :active, do: "badge badge-sm badge-success text-white", else: "badge badge-sm badge-error text-white"}>
+                <span class={
+                  if queue.status == :active,
+                    do: "badge badge-sm badge-success text-white",
+                    else: "badge badge-sm badge-error text-white"
+                }>
                   <%= Phoenix.Naming.humanize(queue.status) %>
                 </span>
               </td>
-              
-              <td>                
-                <%= if is_nil(@current_user) do %>
-                  <.link
-                    navigate={~p"/queues/join/#{queue.id}"}
-                    class="text-xs font-semibold btn btn-xs btn-primary"
-                  >
-                    Join Queue
-                  </.link>
-                <% else %>
-                  <div class="flex flex-col gap-3">
-                    
-                    <div class="flex gap-3">
-                      <.link
-                        navigate={~p"/queues/edit/#{queue.id}"}
-                        class="text-xs text-warning font-semibold hover:underline"
-                      >
-                        Edit
-                      </.link>
-                      <.link
-                        href={~p"/queues/delete/#{queue.id}"}
-                        method="delete"
-                        data-confirm="Delete this queue?"
-                        class="text-xs text-error font-semibold hover:underline"
-                      >
-                        Delete
-                      </.link>
-                    </div>
 
-                    <div class="p-2 bg-gray-50 rounded border border-gray-200">
-                      <p class="text-[10px] font-bold text-gray-500 mb-1">INVITE TELLER:</p>
-                      
-                      <.form :let={f} for={%{}} action={~p"/invitations/create"} method="post" class="flex flex-col gap-2">
-                        <input type="hidden" name="queue_id" value={queue.id} />
-                        
-                        <input 
-                          type="email" 
-                          name="email" 
-                          placeholder="User Email..." 
-                          required 
-                          class="input input-xs input-bordered w-full bg-white" 
-                        />
-                        
-                        <button type="submit" class="btn btn-xs btn-neutral w-full">
-                          Send Invite
-                        </button>
-                      </.form>
-                    </div>
+              <!-- ACTION COLUMN -->
+              <td class="flex flex-col gap-2">
 
-                  </div>
-                <% end %>
-              </td>
+  <!-- OWNER -->
+  <%= if @current_user &&
+        @current_user.role == :owner &&
+        @current_user.id == queue.owner_id do %>
+
+    <.form method="post" action={~p"/queues/#{queue.id}/increment-owner"}>
+      <button
+        type="submit"
+        class="text-xs font-semibold btn btn-xs btn-success"
+        disabled={queue.status != :active}
+      >
+        Increment (Owner)
+      </button>
+    </.form>
+
+  <!-- TELLER -->
+  <% else %>
+    <%= if @current_user && @current_user.role == :teller do %>
+
+      <.form method="post" action={~p"/queues/#{queue.id}/increment"}>
+        <button
+          type="submit"
+          class="text-xs font-semibold btn btn-xs btn-info"
+          disabled={queue.status != :active}
+        >
+          Increment
+        </button>
+      </.form>
+
+    <!-- CLIENT / GUEST -->
+    <% else %>
+      <.link
+        navigate={~p"/queues/join/#{queue.id}"}
+        class="text-xs font-semibold btn btn-xs btn-primary"
+      >
+        Join Queue
+      </.link>
+    <% end %>
+  <% end %>
+
+</td>
+
             </tr>
           <% end %>
+
         <% end %>
       </tbody>
     </table>
