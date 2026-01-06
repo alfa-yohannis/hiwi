@@ -99,28 +99,33 @@ defmodule Hiwi.Queues do
       |> Repo.update()
     end
 
-    # --- INI FUNGSI BARU YANG DITAMBAHKAN (INCREMENT) ---
-    @doc """
-    Maju ke antrean selanjutnya (Increment).
-    Contoh: "A0" -> "A1", "A1" -> "A2".
-    """
-    def increment_queue_number(%Queue{} = queue) do
-      # 1. Hitung nomor selanjutnya
-      new_number = queue.current_number + 1
+   def increment_queue_number(%Queue{} = queue) do
+  # ===============================
+  # Updated by: Kenneth
+  # Reason:
+  # - Ensure only ACTIVE queues can be incremented by Owner
+  # - Improve clarity of queue number generation
+  # ===============================
 
-      # 2. Ambil huruf depannya saja (misal "A10" -> "A")
-      base_prefix = String.replace(queue.prefix, ~r/\d+$/, "")
+  if queue.status != "Active" do
+    {:error, :queue_inactive}
+  else
+    # 1. Hitung nomor selanjutnya
+    new_number = queue.current_number + 1
 
-      # 3. Gabungkan jadi string baru (misal "A" + "11" -> "A11")
-      new_prefix_str = "#{base_prefix}#{new_number}"
+    # 2. Ambil prefix huruf saja (contoh: "A10" -> "A")
+    base_prefix = String.replace(queue.prefix, ~r/\d+$/, "")
 
-      queue
-      |> Ecto.Changeset.change(%{
-           current_number: new_number,
-           prefix: new_prefix_str
-         })
-      |> Repo.update()
-    end
+    # 3. Gabungkan prefix dengan nomor baru (contoh: "A" + "11" -> "A11")
+    new_prefix_str = "#{base_prefix}#{new_number}"
+
+    queue
+    |> Ecto.Changeset.change(%{
+      current_number: new_number,
+      prefix: new_prefix_str
+    })
+    |> Repo.update()
+  end
     # ----------------------------------------------------
 
     @doc """
